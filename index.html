@@ -7,7 +7,7 @@
   <meta name="description" content="Explora en 3D tres propuestas para el stand 2-D02 de Warehouse Solutions en EDIFICA.">
   <title>Warehouse Solutions · Stand EDIFICA 3D</title>
   <link rel="icon" href="assets/logo.jpg">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=1.1">
   <script type="importmap">{"imports":{"three":"./assets/vendor/three.module.js"}}</script>
 </head>
 <body>
@@ -36,6 +36,6 @@
   </main>
   <dialog id="reference-modal"><div class="modal-header"><div><span class="eyebrow">REFERENCIA VISUAL</span><h3 id="modal-title">Corporativa</h3></div><button id="close-modal" aria-label="Cerrar referencia">×</button></div><img id="reference-image" src="assets/concepts/corporativa.jpg" alt="Render conceptual"><p>Render ilustrativo. El modelo 3D utiliza las fotografías originales entregadas por Warehouse Solutions. El mobiliario es una propuesta.</p></dialog>
   <script>window.addEventListener('error', function(e){if(e.filename && /main|three|Orbit/.test(e.filename)){document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('error-message').textContent='No se pudo iniciar el modelo. Abre el proyecto mediante GitHub Pages o un servidor local.';}});</script>
-  <script type="module" src="main.js"></script>
+  <script type="module" src="main.js?v=1.1"></script>
 </body>
 </html>

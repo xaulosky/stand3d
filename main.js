@@ -281,6 +281,7 @@ function setProposal(id, updateUrl = true) {
   $('description').textContent=proposals[id].description;$('proposal-title').textContent=proposals[id].title;
   $('tags').replaceChildren(...proposals[id].tags.map(t=>{const s=document.createElement('span');s.textContent=t;return s;}));
   $('thumbnail').src=proposals[id].render;$('thumbnail').alt=`Render conceptual: ${proposals[id].title}`;
+  $('fallback-image').src=proposals[id].render;$('fallback-image').alt=`Propuesta ${proposals[id].title} del stand`;
   if(ready)build();
   if(updateUrl) {const url=new URL(location.href);url.searchParams.set('propuesta',id);history.replaceState({},'',url);}
 }
@@ -291,6 +292,7 @@ const presets = {
   inside:{position:[0,1.65,3.6],target:[0,1.2,-1.3],name:'Interior'},
 };
 function setView(id, animate=true) {
+  if(!ready)return;
   const p=presets[id];if(!p)return;
   const target=new THREE.Vector3(...p.target);
   const position=new THREE.Vector3(...p.position).sub(target).multiplyScalar(cameraScale).add(target);
@@ -312,6 +314,7 @@ function bindUI() {
   $('reset').addEventListener('click',()=>setView('perspective'));
   $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(container.requestFullscreen)await container.requestFullscreen();else throw new Error('unavailable');}catch{toast('Tu navegador no permite pantalla completa.');}});
   $('capture').addEventListener('click',()=>{
+    if(!ready)return;
     renderer.render(scene,camera);renderer.domElement.toBlob(blob=>{if(!blob)return;const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=`Warehouse-${current}-2-D02.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);},'image/png');
   });
   const dialog=$('reference-modal');
@@ -336,10 +339,11 @@ async function init() {
     const fill=new THREE.DirectionalLight('#dae9ff',1.1);fill.position.set(4,3,-2);scene.add(fill);
     const ground=new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.ShadowMaterial({opacity:.15}));ground.rotation.x=-Math.PI/2;ground.position.y=-.002;ground.receiveShadow=true;scene.add(ground);
     const entries=await Promise.all(Object.entries(resourceNames).map(async([key,src])=>[key,await loadImage(src)]));assetImages=Object.fromEntries(entries);
-    const initial=new URL(location.href).searchParams.get('propuesta');setProposal(proposals[initial]?initial:'corporativa',false);
-    ready=true;build();setView('perspective',false);resize();new ResizeObserver(resize).observe(container);bindUI();$('loading').hidden=true;requestAnimationFrame(animate);
+    ready=true;build();setView('perspective',false);resize();new ResizeObserver(resize).observe(container);$('loading').hidden=true;requestAnimationFrame(animate);
     // Estado legible para comprobaciones del visor y futuras integraciones.
     window.standViewer={get proposal(){return current;},get dimensions(){return {width:3,depth:3,height:2.5};},get scene(){return scene;},get renderer(){return renderer;},get camera(){return camera;},get booth(){return booth;},get furniture(){return furniture;},get sides(){return sides;},setProposal,setView};
-  }catch(err){console.error(err);$('loading').hidden=true;$('error').hidden=false;$('error-message').textContent=err.message+' Abre el proyecto desde GitHub Pages o un servidor local compatible con WebGL.';}
+  }catch(err){console.error(err);$('loading').hidden=true;$('error').hidden=false;container.classList.add('no-webgl');['furniture','walls','dimensions','rotate'].forEach(id=>$(id).disabled=true);if(booth){ready=false;disposeGroup(booth);}}
 }
+const initial=new URL(location.href).searchParams.get('propuesta');
+setProposal(proposals[initial]?initial:'corporativa',false);bindUI();
 init();

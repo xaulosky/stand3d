@@ -1,6 +1,6 @@
 # Warehouse Solutions · Stand EDIFICA 3D
 
-Visor web interactivo para presentar tres propuestas del stand **2-D02**, con una envolvente nominal de **3 × 3 × 2,5 m**. Proyecto estático, preparado para GitHub Pages. No necesita Node, instalación de paquetes, backend ni claves de API. Three.js y OrbitControls están incluidos en el proyecto; no se cargan desde un CDN.
+Visor web interactivo para presentar tres propuestas del stand **2-D02**, con una envolvente nominal de **3 × 3 × 2,5 m**. Publicado en [GitHub Pages](https://xaulosky.github.io/stand3d/). No necesita Node, instalación de paquetes, backend ni claves de API. Three.js y OrbitControls están incluidos en el proyecto; no se cargan desde un CDN.
 
 ## Qué incluye
 
@@ -13,6 +13,7 @@ Visor web interactivo para presentar tres propuestas del stand **2-D02**, con un
 - Logo original y fotografías extraídas del Excel entregado por el cliente.
 - Diseño adaptable a computador, tablet y celular.
 - Enlaces directos a propuestas mediante `?propuesta=corporativa`, `?propuesta=arco` o `?propuesta=galeria`.
+- Vista de renders cuando el navegador no puede inicializar los gráficos 3D.
 
 ## Subir a GitHub Pages
 
@@ -77,4 +78,4 @@ Three.js y OrbitControls: licencia MIT, incluida en `assets/vendor/THREE-LICENSE
 
 ## Verificación de esta entrega
 
-Comprobado en Chromium con WebGL: tres propuestas, carga desde una subcarpeta, recursos locales sin peticiones externas, enlaces directos, controles de visibilidad, cambios de cámara, giro con mouse, modal de referencia y descarga PNG. Revisado en formatos de escritorio y celular. El mobiliario está dentro de la planta de 3 × 3 m. La publicación en GitHub Pages se realizará al disponer del repositorio.
+Comprobado en Chromium con WebGL: tres propuestas, carga desde una subcarpeta, recursos locales sin peticiones externas, enlaces directos, controles de visibilidad, cambios de cámara, giro con mouse, modal de referencia y descarga PNG. Revisado en formatos de escritorio y celular. El mobiliario está dentro de la planta de 3 × 3 m. Despliegue automático en GitHub Pages mediante Actions.

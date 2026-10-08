@@ -8,6 +8,13 @@ export const photos = {
   cubierta: 'assets/photos/cubierta.jpg', serviteca: 'assets/photos/serviteca.jpg',
   cabana: 'assets/photos/cabana.jpg',
 };
+// Textos de la última referencia facilitada por el cliente.
+export const benefits = [
+  { icon: 'bolt', title: 'MONTAJE RÁPIDO', detail: 'Instalación en menos de 2 semanas.' },
+  { icon: 'space', title: 'LUZ LIBRE TOTAL', detail: 'Sin columnas interiores.' },
+  { icon: 'shield', title: 'ALTA RESISTENCIA', detail: 'Acero galvanizado 1,2 mm.' },
+  { icon: 'modular', title: 'DISEÑO MODULAR', detail: 'Ampliaciones según requerimiento.' },
+];
 export const proposals = {
   corporativa: {
     title: 'Corporativa', description: 'La marca y una gran imagen de hangar reciben al visitante. Las soluciones y sus beneficios se distribuyen en los laterales, dejando espacio para conversar.',
@@ -23,5 +30,20 @@ export const proposals = {
     title: 'Galería de proyectos', description: 'Cuatro aplicaciones se presentan como una galería. Un lateral introduce casas, cabañas y refugios; el otro incorpora una pantalla y muestras del material.',
     tags: ['Cuatro soluciones', 'Pantalla', 'Nuevos desarrollos'],
     render: 'assets/concepts/galeria.jpg',
+  },
+  beneficios: {
+    title: 'Cuatro beneficios', description: 'Los cuatro beneficios de la última referencia comparten el fondo con una gran imagen de hangar. La recepción se sitúa a la derecha y los laterales presentan aplicaciones y muestras.',
+    tags: ['Cuatro beneficios', 'Recepción lateral', 'Gráfica en PVC'],
+    render: 'assets/concepts/beneficios.jpg',
+  },
+  minimalista: {
+    title: 'Minimalista', description: 'Una propuesta luminosa con fondo blanco, piso de aspecto madera y listones decorativos. La imagen del hangar centra el mensaje, con una mesa de reunión y muestras en el lateral.',
+    tags: ['Blanco y madera', 'Listones decorativos', 'Mesa de reunión'],
+    render: 'assets/concepts/minimalista.jpg',
+  },
+  laboratorio: {
+    title: 'Laboratorio de soluciones', description: 'Una maqueta de cubierta sobre un pedestal invita a descubrir el sistema. La pantalla y las muestras explican el producto, acompañadas por los cuatro beneficios y un banco de espera.',
+    tags: ['Maqueta protagonista', 'Pantalla y muestras', 'Banco de espera'],
+    render: 'assets/concepts/laboratorio.jpg',
   },
 };

@@ -1,10 +1,10 @@
 # Warehouse Solutions · Stand EDIFICA 3D
 
-Visor web interactivo para presentar tres propuestas del stand **2-D02**, con una envolvente nominal de **3 × 3 × 2,5 m**. Publicado en [GitHub Pages](https://xaulosky.github.io/stand3d/). No necesita Node, instalación de paquetes, backend ni claves de API. Three.js y OrbitControls están incluidos en el proyecto; no se cargan desde un CDN.
+Visor web interactivo para presentar seis propuestas del stand **2-D02**, con una envolvente nominal de **3 × 3 × 2,5 m**. Publicado en [GitHub Pages](https://xaulosky.github.io/stand3d/). No necesita Node, instalación de paquetes, backend ni claves de API. Three.js y OrbitControls están incluidos en el proyecto; no se cargan desde un CDN.
 
 ## Qué incluye
 
-- Tres modelos: Corporativa, Arco industrial y Galería de proyectos.
+- Seis modelos: Corporativa, Arco industrial, Galería de proyectos, Cuatro beneficios, Minimalista y Laboratorio de soluciones.
 - Giro, zoom y desplazamiento mediante mouse o pantalla táctil.
 - Vistas en perspectiva, frontal, planta e interior.
 - Controles para mostrar mobiliario, laterales, dimensiones y giro automático.
@@ -12,8 +12,18 @@ Visor web interactivo para presentar tres propuestas del stand **2-D02**, con un
 - Render conceptual de referencia para cada alternativa.
 - Logo original y fotografías extraídas del Excel entregado por el cliente.
 - Diseño adaptable a computador, tablet y celular.
-- Enlaces directos a propuestas mediante `?propuesta=corporativa`, `?propuesta=arco` o `?propuesta=galeria`.
+- Enlaces directos mediante `?propuesta=` seguido de `corporativa`, `arco`, `galeria`, `beneficios`, `minimalista` o `laboratorio`.
 - Vista de renders cuando el navegador no puede inicializar los gráficos 3D.
+
+## Nuevas alternativas
+
+| Propuesta | Distribución y elementos |
+| --- | --- |
+| Cuatro beneficios | Fondo con los cuatro mensajes de la última referencia, recepción a la derecha, mesa y muestras. |
+| Minimalista | Blanco, piso de aspecto madera, listones, recepción a la izquierda y mesa de reunión. |
+| Laboratorio de soluciones | Pedestal con maqueta, pantalla y muestras a la izquierda, banco al fondo y recepción a la derecha. |
+
+Los textos de beneficios se centralizan en `config.js` y siguen la última imagen entregada: instalación en menos de 2 semanas, sin columnas interiores, acero galvanizado de 1,2 mm y ampliaciones según requerimiento. Son mensajes facilitados por el cliente, pendientes de su validación final para impresión.
 
 ## Subir a GitHub Pages
 
@@ -62,7 +72,7 @@ Abre `http://localhost:8000`. En algunos equipos el comando es `python3` o `py`.
 | `assets/stand-original.jpg` | Referencia de la estructura modular entregada. |
 | `assets/vendor/` | Dependencias locales y licencia MIT de Three.js 0.170.0. |
 
-Los paneles se generan como texturas con Canvas a partir de las fotos y textos; no son archivos preparados para impresión. El arco se modela como un marco decorativo plano. La pantalla de la galería muestra una imagen fija; no reproduce un video. No hay captura de datos, analítica ni conexiones a servicios externos.
+Los paneles se generan como texturas con Canvas a partir de las fotos y textos; no son archivos preparados para impresión. El arco se modela como un marco decorativo plano. Las pantallas de Galería y Laboratorio muestran imágenes fijas; no reproducen un video. Los listones, piso de aspecto madera, banco y pedestal se modelan con volumen. La cubierta del pedestal es una maqueta simplificada. No hay captura de datos, analítica ni conexiones a servicios externos.
 
 Las caras exteriores de los laterales se representan atenuadas para poder explorar el interior al girar el modelo. La gráfica interior permanece opaca. El control Laterales permite retirar esas paredes por completo para revisar la distribución.
 
@@ -78,4 +88,4 @@ Three.js y OrbitControls: licencia MIT, incluida en `assets/vendor/THREE-LICENSE
 
 ## Verificación de esta entrega
 
-Comprobado en Chromium con WebGL: tres propuestas, carga desde una subcarpeta, recursos locales sin peticiones externas, enlaces directos, controles de visibilidad, cambios de cámara, giro con mouse, modal de referencia y descarga PNG. Revisado en formatos de escritorio y celular. El mobiliario está dentro de la planta de 3 × 3 m. Despliegue automático en GitHub Pages mediante Actions.
+Comprobado en Chromium con WebGL: seis propuestas, carga desde una subcarpeta, recursos locales sin peticiones externas, enlaces directos, controles de visibilidad, cambios de cámara, giro con mouse, modal de referencia y descarga PNG. Revisado en formatos de escritorio y celular. El mobiliario está dentro de la planta de 3 × 3 m. Despliegue automático en GitHub Pages mediante Actions.

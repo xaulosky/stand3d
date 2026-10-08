@@ -5,3 +5,19 @@
 .proposal{transition:border-color .15s}
 
 .error img{width:85%;height:65%;object-fit:contain;border-radius:8px;margin-top:12px}.error p{max-width:440px}.no-webgl .view-controls,.no-webgl .canvas-actions,.no-webgl .viewer-footer{display:none}.no-webgl .viewer-label{z-index:7}.error{padding:56px 20px 20px;gap:0}@media(max-width:760px){.error{padding:52px 12px 20px}.error img{width:100%;height:63%}.error p{font-size:10px}.error strong{font-size:12px}}
+
+/* Seis propuestas: navegación compacta y desplazamiento independiente en escritorio. */
+.sidebar{height:100dvh;overflow-y:auto;scrollbar-width:thin}
+.intro{margin:23px 0 18px}.intro h1{font-size:27px;margin:9px 0 12px}.intro p{margin:0}
+.proposals{gap:7px}.proposal{padding:11px 10px;min-height:59px;gap:9px}
+.proposal>span:nth-child(2){min-width:0}.proposal strong{line-height:1.35}
+.detail{margin:20px 0}.detail p{margin:8px 0 12px}.sidebar-bottom{padding-top:5px}
+@media(max-width:760px){
+  body{display:flex;flex-direction:column;height:100dvh}
+  .sidebar{height:auto;overflow:visible;padding:12px 14px;flex:none}
+  .proposals{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:12px;gap:6px}
+  .proposal{padding:8px 7px;gap:5px;min-height:48px}
+  .proposal strong{font-size:10px}.workspace{height:auto;min-height:510px;flex:1}
+  .topbar{gap:10px}.topbar h2{font-size:17px;max-width:210px;line-height:1.25}
+  .project-info{flex:none}
+}

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { OrbitControls } from './assets/vendor/OrbitControls.js';
-import { brand, photos, proposals } from './config.js';
+import { brand, photos, benefits, proposals } from './config.js?v=1.2';
 
 const $ = (id) => document.getElementById(id);
 const container = $('viewer');
@@ -64,7 +64,110 @@ function tile(ctx, photo, title, x, y, w, h) {
   ctx.fillStyle = YELLOW; ctx.fillRect(x, y + h - 76, w, 5);
   text(ctx, title, x + w / 2, y + h - 33, Math.min(31, w / 12), '#fff', 650, 'center');
 }
+function wrappedText(ctx, value, x, y, width, size, color, weight = 500) {
+  ctx.font = `${weight} ${size}px Arial, sans-serif`;
+  let line = '';
+  for (const word of value.split(' ')) {
+    const next = line ? `${line} ${word}` : word;
+    if (line && ctx.measureText(next).width > width) {
+      text(ctx, line, x, y, size, color, weight); y += size * 1.25; line = word;
+    } else line = next;
+  }
+  text(ctx, line, x, y, size, color, weight);
+  return y + size * 1.25;
+}
+function benefitIcon(ctx, kind, x, y, size) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(size / 100, size / 100);
+  ctx.strokeStyle = YELLOW; ctx.fillStyle = YELLOW; ctx.lineWidth = 6;
+  ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.beginPath();
+  if (kind === 'bolt') {
+    ctx.moveTo(14,-48);ctx.lineTo(-32,9);ctx.lineTo(-6,9);ctx.lineTo(-20,49);ctx.lineTo(35,-12);ctx.lineTo(7,-12);ctx.closePath();ctx.fill();
+  } else if (kind === 'space') {
+    ctx.strokeRect(-39,-39,78,78);
+    [[-23,23],[0,0],[23,-23]].forEach(([a,b])=>ctx.strokeRect(a-5,b-5,10,10));
+  } else if (kind === 'shield') {
+    ctx.moveTo(0,-45);ctx.quadraticCurveTo(20,-29,39,-28);ctx.lineTo(36,9);ctx.quadraticCurveTo(27,31,0,48);ctx.quadraticCurveTo(-27,31,-36,9);ctx.lineTo(-39,-28);ctx.quadraticCurveTo(-20,-29,0,-45);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(-15,0);ctx.lineTo(-2,15);ctx.lineTo(20,-12);ctx.stroke();
+  } else {
+    ctx.moveTo(-43,42);ctx.lineTo(-43,-8);ctx.lineTo(0,-43);ctx.lineTo(43,-8);ctx.lineTo(43,42);ctx.closePath();ctx.stroke();
+    ctx.strokeRect(-23,-9,46,14);ctx.strokeRect(-22,17,44,25);
+    ctx.beginPath();ctx.moveTo(0,42);ctx.lineTo(0,22);ctx.stroke();
+  }
+  ctx.restore();
+}
+function benefitGrid(ctx, {x=80,y=240,w=1440,h=620,dark=false}={}) {
+  const color = dark ? '#fff' : NAVY, cw = w / 2, ch = h / 2;
+  benefits.forEach((item,i)=>{
+    const left=x+(i%2)*cw, top=y+Math.floor(i/2)*ch;
+    benefitIcon(ctx,item.icon,left+75,top+65,86);
+    const after=wrappedText(ctx,item.title,left+145,top+40,cw-170,43,color,700);
+    wrappedText(ctx,item.detail,left+145,Math.max(after+12,top+142),cw-180,31,dark?'#cddce9':'#5d7587');
+  });
+  ctx.fillStyle=dark?'#ffffff30':'#d9e1e7';ctx.fillRect(x+cw,y+5,2,h-25);ctx.fillRect(x,y+ch-15,w,2);
+}
+function newGraphic(which) {
+  const dark = current !== 'minimalista';
+  const [c,ctx] = canvas(1600,1200,dark?NAVY:'#fff');
+  if(current==='beneficios') {
+    if(which==='back') {
+      cover(ctx,assetImages.hangar,670,0,930,1200);
+      const fade=ctx.createLinearGradient(620,0,1300,0);fade.addColorStop(0,NAVY);fade.addColorStop(1,'#14385800');ctx.fillStyle=fade;ctx.fillRect(620,0,700,1200);
+      text(ctx,'SOLUCIONES QUE CONSTRUYEN',75,110,47,'#fff',700);
+      benefits.forEach((item,i)=>{
+        const y=295+i*225;benefitIcon(ctx,item.icon,115,y,92);
+        text(ctx,item.title,205,y-20,45,'#fff',700);
+        wrappedText(ctx,item.detail,205,y+43,650,33,'#e3edf5');
+      });
+    } else if(which==='left') {
+      tile(ctx,'hangar','HANGARES',65,60,1470,510);
+      tile(ctx,'contenedor','SOBRE CONTENEDOR',65,620,1470,515);
+    } else {
+      text(ctx,'CUBIERTAS DEPORTIVAS',800,95,64,'#fff',700,'center');
+      cover(ctx,assetImages.cubierta,65,175,1470,650);
+      ctx.fillStyle=YELLOW;ctx.fillRect(65,825,1470,8);
+      text(ctx,'CONOCE NUESTRO MATERIAL',800,1110,46,'#fff',650,'center');
+    }
+  } else if(current==='minimalista') {
+    if(which==='back') {
+      ctx.fillStyle=NAVY;ctx.fillRect(195,145,1210,230);
+      text(ctx,'ESPACIOS QUE CRECEN',800,255,66,'#fff',700,'center');
+      ctx.fillStyle=YELLOW;ctx.fillRect(255,325,230,7);
+      cover(ctx,assetImages.hangar,195,375,1210,665);
+    } else if(which==='left') {
+      tile(ctx,'hangar','HANGARES',95,100,1410,485);
+      tile(ctx,'contenedor','SOBRE CONTENEDOR',95,630,1410,485);
+    } else {
+      text(ctx,'MÁS POSIBILIDADES',800,90,61,NAVY,700,'center');
+      benefitGrid(ctx,{x:70,y:185,w:1460,h:530});
+      ctx.fillStyle=YELLOW;ctx.fillRect(100,1070,1400,5);
+      text(ctx,'Soluciones a la medida de tu proyecto',800,1130,39,NAVY,450,'center');
+    }
+  } else {
+    if(which==='back') {
+      text(ctx,'INGENIERÍA A TU ALCANCE',800,115,74,'#fff',700,'center');
+      ctx.fillStyle=YELLOW;ctx.fillRect(420,188,760,6);
+      benefitGrid(ctx,{x:70,y:260,w:1460,h:585,dark:true});
+      // Esquema decorativo de módulos: no representa un plano constructivo.
+      ctx.strokeStyle='#7195b3';ctx.lineWidth=2;
+      for(let i=0;i<4;i++) {
+        const x=230+i*365;
+        for(let j=0;j<4;j++) {ctx.beginPath();ctx.moveTo(x-125+j*14,1135-j*14);ctx.lineTo(x-125+j*14,1030-j*14);ctx.ellipse(x+j*14,1030-j*14,125,120,0,Math.PI,Math.PI*2);ctx.lineTo(x+125+j*14,1135-j*14);ctx.stroke();}
+      }
+    } else if(which==='left') {
+      text(ctx,'DEL DISEÑO AL MONTAJE',800,100,68,'#fff',700,'center');
+      ctx.fillStyle=YELLOW;ctx.fillRect(90,172,1420,8);
+      ctx.beginPath();ctx.moveTo(0,1200);ctx.lineTo(1600,390);ctx.lineTo(1600,570);ctx.lineTo(330,1200);ctx.fill();
+      text(ctx,'MATERIALES Y TERMINACIONES',800,1105,47,'#fff',650,'center');
+    } else {
+      text(ctx,'GRANDES ESPACIOS',800,110,86,'#fff',700,'center');
+      cover(ctx,assetImages.hangar,65,220,1470,860);
+      ctx.fillStyle=YELLOW;ctx.fillRect(65,212,1470,8);
+    }
+  }
+  return texture(c);
+}
 function graphic(which) {
+  if(['beneficios','minimalista','laboratorio'].includes(current))return newGraphic(which);
   const [c, ctx] = canvas(1600, 1200, current === 'arco' ? NAVY : '#fff');
   if (which === 'back' && current === 'corporativa') {
     ctx.fillStyle = NAVY; ctx.fillRect(0, 0, 1600, 282);
@@ -161,6 +264,9 @@ function counter(parent, right = false) {
   if (current === 'arco') box(parent, .014, .87, .39, x + .437, .51, z, YELLOW);
   box(parent, .15, .018, .20, x-.12, .997, z, NAVY);
   box(parent, .15, .008, .20, x-.12, 1.01, z, '#fafafa');
+  if(current==='minimalista') {
+    for(let i=0;i<5;i++)box(parent,.016,.84,.014,x-.402+i*.021,.51,z+.218,'#c4a478');
+  }
 }
 function sample(parent, x, y, z, size = .40, rotation = 0) {
   const g = new THREE.Group(); g.position.set(x, y, z); g.rotation.y = rotation; parent.add(g);
@@ -195,6 +301,37 @@ function arch(parent) {
     box(parent,.018,1.21,.008,sign*1.36,.675,1.452,YELLOW);
   }
 }
+function woodDetails(parent) {
+  const colors=['#d5ba93','#d9bf9c','#ceb18b','#dec6a4'];
+  for(let i=0;i<14;i++)box(parent,.207,.008,2.94,-1.365+i*.21,.080,0,colors[i%4],{roughness:.9});
+  for(const sign of [-1,1]) {
+    box(parent,.33,2.13,.026,sign*1.275,1.155,-1.426,'#9f825e');
+    for(let i=0;i<8;i++)box(parent,.025,2.13,.035,sign*(1.132+i*.041),1.155,-1.397,colors[i%4]);
+  }
+}
+function wallScreen(parent, sign=1, z=-.32, width=.94, height=.52) {
+  box(parent,.048,height,width,sign*1.414,1.49,z,'#202a33');
+  const [c,ctx]=canvas(1200,675,NAVY);cover(ctx,assetImages[sign<0?'contenedor':'serviteca'],0,0,1200,675);
+  plane(parent,width-.05,height-.05,sign*1.386,1.49,z,texture(c),sign<0?Math.PI/2:-Math.PI/2);
+}
+function sampleShelf(parent, sign=1, y=.91, z=-.20, count=2) {
+  box(parent,.30,.035,.94,sign*1.27,y,z,'#fff');
+  box(parent,.044,.09,.86,sign*1.415,y-.06,z,'#f6f7f8');
+  for(let i=0;i<count;i++)sample(parent,sign*1.26,y+.023,z+(i-(count-1)/2)*.30,.24,Math.PI/2);
+}
+function laboratoryFurniture(parent) {
+  wallScreen(parent,-1,-.25,1.17,.66);
+  sampleShelf(parent,-1,.99,-.25,3);sampleShelf(parent,-1,.61,-.25,2);
+  const pedestal=new THREE.Group();pedestal.name='Pedestal de demostración';parent.add(pedestal);
+  box(pedestal,.95,.83,.70,-.60,.485,.04,NAVY);
+  box(pedestal,.956,.075,.706,-.60,.64,.04,YELLOW);
+  box(pedestal,1,.04,.75,-.60,.92,.04,'#fff');
+  sample(pedestal,-.60,.945,.04,.74);
+  // Banco compacto contra el fondo, bajo la gráfica.
+  box(parent,.84,.32,.42,.82,.265,-1.16,'#f6f7f8');
+  box(parent,.86,.105,.44,.82,.477,-1.16,NAVY);
+  box(parent,.86,.36,.065,.82,.65,-1.345,NAVY);
+}
 function disposeGroup(g) {
   if (!g) return;
   const geos = new Set(), mats = new Set(), maps = new Set();
@@ -227,6 +364,7 @@ function build() {
   // La envolvente completa incluyendo la tarima y cenefa mide 3 × 3 × 2,5 m.
   box(booth,3,.07,3,0,.035,0,'#89909a',{roughness:1});
   box(booth,2.94,.008,2.94,0,.074,0,'#b3b8bd',{roughness:1});
+  if(current==='minimalista')woodDetails(booth);
   box(booth,2.96,2.15,.028,0,1.155,-1.477,'#f4f5f6');
   plane(booth,2.94,2.14,0,1.155,-1.459,graphic('back'));
   for (const sign of [-1,1]) {
@@ -249,12 +387,18 @@ function build() {
     const lamp = cylinder(booth,.04,.04,.14,x,2.10,1.28,'#fff');lamp.rotation.x = -.40;
   }
   if (current === 'arco') arch(booth);
-  counter(furniture,current==='galeria');
-  if(current==='galeria') {
+  counter(furniture,['galeria','beneficios','laboratorio'].includes(current));
+  if(current==='laboratorio') {
+    laboratoryFurniture(furniture);
+  } else if(current==='beneficios') {
+    table(furniture,.29,-.79);chair(furniture,-.17,-.74,Math.PI/2);chair(furniture,.79,-.74,-Math.PI/2);
+    sampleShelf(furniture,1,.79,.05,2);
+  } else if(current==='minimalista') {
+    table(furniture,.52,-.72);chair(furniture,.05,-.66,Math.PI/2);chair(furniture,1,-.67,-Math.PI/2);
+    sampleShelf(furniture,1,.82,.26,2);
+  } else if(current==='galeria') {
     table(furniture,-.64,-.62);chair(furniture,-1.01,-.20,-.50,NAVY);chair(furniture,-.15,-.72,-2.05,NAVY);
-    const screen = box(furniture,.048,.52,.94,1.414,1.46,-.32,'#202a33');
-    const [c,ctx]=canvas(1200,675,NAVY);cover(ctx,assetImages.serviteca,0,0,1200,675);
-    plane(furniture,.89,.47,1.386,1.46,-.32,texture(c),-Math.PI/2);
+    wallScreen(furniture);
     box(furniture,.29,.032,1.12,1.28,.95,-.32,'#fff');
     for(let i=0;i<3;i++)sample(furniture,1.27,.97,-.65+i*.33,.23,-Math.PI/2);
   } else {

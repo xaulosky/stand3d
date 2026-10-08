@@ -4,20 +4,23 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#143858">
-  <meta name="description" content="Explora en 3D tres propuestas para el stand 2-D02 de Warehouse Solutions en EDIFICA.">
+  <meta name="description" content="Explora en 3D seis propuestas para el stand 2-D02 de Warehouse Solutions en EDIFICA.">
   <title>Warehouse Solutions · Stand EDIFICA 3D</title>
   <link rel="icon" href="assets/logo.jpg">
-  <link rel="stylesheet" href="styles.css?v=1.1">
+  <link rel="stylesheet" href="styles.css?v=1.2">
   <script type="importmap">{"imports":{"three":"./assets/vendor/three.module.js"}}</script>
 </head>
 <body>
   <aside class="sidebar">
     <a class="brand" href="./" aria-label="Warehouse Solutions, inicio"><img src="assets/logo.jpg" alt="Warehouse Solutions"><span>Estudio de stand<small>EDIFICA · 2-D02</small></span></a>
-    <div class="intro"><span class="eyebrow">PROPUESTA DE DISEÑO</span><h1>Un espacio.<br>Tres posibilidades.</h1><p>Explora la distribución, la gráfica y el mobiliario de cada propuesta.</p></div>
+    <div class="intro"><span class="eyebrow">PROPUESTA DE DISEÑO</span><h1>Un espacio.<br>Seis posibilidades.</h1><p>Explora la distribución, la gráfica y el mobiliario de cada propuesta.</p></div>
     <nav class="proposals" aria-label="Propuestas de diseño">
       <button class="proposal active" data-proposal="corporativa" aria-pressed="true"><span class="number">01</span><span><strong>Corporativa</strong><small>Marca y mensaje protagonista</small></span><span class="arrow">↗</span></button>
       <button class="proposal" data-proposal="arco" aria-pressed="false"><span class="number">02</span><span><strong>Arco industrial</strong><small>Inspirada en sus techos</small></span><span class="arrow">↗</span></button>
       <button class="proposal" data-proposal="galeria" aria-pressed="false"><span class="number">03</span><span><strong>Galería de proyectos</strong><small>Una solución para cada uso</small></span><span class="arrow">↗</span></button>
+      <button class="proposal" data-proposal="beneficios" aria-pressed="false"><span class="number">04</span><span><strong>Cuatro beneficios</strong><small>Ventajas que se ven</small></span><span class="arrow">↗</span></button>
+      <button class="proposal" data-proposal="minimalista" aria-pressed="false"><span class="number">05</span><span><strong>Minimalista</strong><small>Luz, blanco y madera</small></span><span class="arrow">↗</span></button>
+      <button class="proposal" data-proposal="laboratorio" aria-pressed="false"><span class="number">06</span><span><strong>Laboratorio de soluciones</strong><small>El producto en primer plano</small></span><span class="arrow">↗</span></button>
     </nav>
     <section class="detail" aria-live="polite"><span class="eyebrow">EL CONCEPTO</span><p id="description"></p><div id="tags" class="tags"></div></section>
     <div class="sidebar-bottom"><button id="reference" class="reference"><img id="thumbnail" src="assets/concepts/corporativa.jpg" alt="Render conceptual de la propuesta"><span>Ver render conceptual<small>Referencia visual</small></span><span>↗</span></button><p class="note">Modelo conceptual. Medidas de paneles y montaje pendientes de validación.</p></div>
@@ -27,7 +30,7 @@
     <section id="viewer" class="viewer" aria-label="Modelo tridimensional del stand. Arrastra para girar y usa la rueda para acercar.">
       <div class="viewer-label"><span class="live-dot"></span> VISOR 3D <span class="divider">/</span><span id="view-name">Perspectiva</span></div>
       <div id="loading" class="loading"><span class="spinner"></span><strong>Preparando tu espacio</strong><span>Cargando el modelo y las gráficas…</span></div>
-      <div id="error" class="error" hidden><strong>Vista de referencia</strong><img id="fallback-image" src="assets/concepts/corporativa.jpg" alt="Propuesta corporativa del stand"><p id="error-message">Este navegador no permite mostrar gráficos 3D. Puedes explorar las tres propuestas mediante sus renders.</p><button onclick="location.reload()">Intentar vista 3D</button></div>
+      <div id="error" class="error" hidden><strong>Vista de referencia</strong><img id="fallback-image" src="assets/concepts/corporativa.jpg" alt="Propuesta corporativa del stand"><p id="error-message">Este navegador no permite mostrar gráficos 3D. Puedes explorar las seis propuestas mediante sus renders.</p><button onclick="location.reload()">Intentar vista 3D</button></div>
       <div class="view-controls" role="group" aria-label="Vistas de cámara"><button data-view="perspective" class="active" title="Vista en perspectiva">Perspectiva</button><button data-view="front">Frontal</button><button data-view="top">Planta</button><button data-view="inside">Interior</button></div>
       <div class="canvas-actions"><button id="capture" title="Guardar una imagen de la vista actual" aria-label="Guardar imagen">↓</button><button id="fullscreen" title="Pantalla completa" aria-label="Pantalla completa"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5"/></svg></button><button id="reset" title="Restablecer vista" aria-label="Restablecer vista">↺</button></div>
       <div class="viewer-footer"><span class="gesture">Arrastra para girar <b>·</b> Rueda o pellizco para acercar</span><span class="scale">METROS · MODELO A ESCALA</span></div>
@@ -36,6 +39,6 @@
   </main>
   <dialog id="reference-modal"><div class="modal-header"><div><span class="eyebrow">REFERENCIA VISUAL</span><h3 id="modal-title">Corporativa</h3></div><button id="close-modal" aria-label="Cerrar referencia">×</button></div><img id="reference-image" src="assets/concepts/corporativa.jpg" alt="Render conceptual"><p>Render ilustrativo. El modelo 3D utiliza las fotografías originales entregadas por Warehouse Solutions. El mobiliario es una propuesta.</p></dialog>
   <script>window.addEventListener('error', function(e){if(e.filename && /main|three|Orbit/.test(e.filename)){document.getElementById('loading').hidden=true;document.getElementById('error').hidden=false;document.getElementById('error-message').textContent='No se pudo iniciar el modelo. Abre el proyecto mediante GitHub Pages o un servidor local.';}});</script>
-  <script type="module" src="main.js?v=1.1"></script>
+  <script type="module" src="main.js?v=1.2"></script>
 </body>
 </html>

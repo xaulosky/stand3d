@@ -1,13 +1,16 @@
 import * as THREE from 'three';
 import { OrbitControls } from './assets/vendor/OrbitControls.js';
-import { brand, photos, benefits, proposals } from './config.js?v=2.0';
+import { brand, photos, benefits, proposals } from './config.js?v=2.1';
 import { panelFiles } from './panel-data.js?v=2.0';
+import { createSampleDisplay, sampleSpec, displayPosition, sampleLevels } from './sample-display.js?v=2.1';
 
 const $ = (id) => document.getElementById(id);
 const container = $('viewer');
 const NAVY = brand.navy, YELLOW = brand.yellow;
-let scene, camera, renderer, controls, booth, furniture, sides, dimensions;
-let current = 'ajustada', cameraMotion = null, assetImages = {}, ready = false;
+let scene, camera, renderer, controls, booth, furniture, sides, dimensions, sampleDisplay, sampleDimensions;
+let current = 'muestras', cameraMotion = null, assetImages = {}, ready = false;
+let currentView = 'perspective';
+const isAdjusted = () => current === 'ajustada' || current === 'muestras';
 let cameraScale = 1;
 const query = new URL(location.href).searchParams;
 let panelLayout = query.get('distribucion') === 'fila' ? 'fila' : 'cuadricula';
@@ -365,6 +368,20 @@ function makeDimensions() {
   line([1.73,.00,-1.5],[1.73,2.5,-1.5]);
   [0,2.5].forEach(y=>line([1.61,y,-1.5],[1.83,y,-1.5]));dimensionLabel('2,50 m',1.90,1.28,-1.5);
 }
+function makeSampleDimensions() {
+  // Agrupadas aparte para ocultarlas junto con el expositor.
+  const standDimensions=dimensions;sampleDimensions=new THREE.Group();sampleDimensions.name='Medidas de las muestras';
+  booth.add(sampleDimensions);dimensions=sampleDimensions;
+  const {x,y,z}=displayPosition,half=sampleSpec.width/2,top=y+sampleLevels[1]+sampleSpec.height/2,bottom=top-sampleSpec.height;
+  line([x-half,top+.055,z+.10],[x+half,top+.055,z+.10]);
+  for(const end of [x-half,x+half])line([end,top+.025,z+.10],[end,top+.085,z+.10]);
+  dimensionLabel('93 cm',x,top+.065,z+.13);
+  line([x-half-.065,bottom,z+.39],[x-half-.065,top,z+.39]);
+  for(const h of [bottom,top])line([x-half-.095,h,z+.39],[x-half-.035,h,z+.39]);
+  dimensionLabel('56 cm',x-half-.13,(top+bottom)/2,z+.40);
+  sampleDimensions.children.filter(o=>o.isSprite).forEach(o=>o.scale.multiplyScalar(.62));
+  dimensions=standDimensions;
+}
 function buildAdjusted() {
   const steel='#67727d';
   const frames=new THREE.Group();frames.name='Bastidor independiente conceptual';booth.add(frames);
@@ -415,13 +432,18 @@ function buildAdjusted() {
   }
   counter(furniture);
   table(furniture,.39,-.65);chair(furniture,-.08,-.62,Math.PI/2);chair(furniture,.87,-.62,-Math.PI/2);
-  makeDimensions();syncVisibility();
+  makeDimensions();
+  if(current==='muestras'){
+    sampleDisplay=createSampleDisplay({navy:NAVY,accent:YELLOW});booth.add(sampleDisplay);makeSampleDimensions();
+  }
+  syncVisibility();
 }
 function build() {
   disposeGroup(booth);booth = new THREE.Group();scene.add(booth);
+  sampleDisplay=null;sampleDimensions=null;
   sides = new THREE.Group();booth.add(sides);
   furniture = new THREE.Group();booth.add(furniture);
-  if(current==='ajustada'){buildAdjusted();return;}
+  if(isAdjusted()){buildAdjusted();return;}
   // La envolvente completa incluyendo la tarima y cenefa mide 3 × 3 × 2,5 m.
   box(booth,3,.07,3,0,.035,0,'#89909a',{roughness:1});
   box(booth,2.94,.008,2.94,0,.074,0,'#b3b8bd',{roughness:1});
@@ -477,7 +499,9 @@ function build() {
 }
 function syncVisibility() {
   if(!ready && !booth)return;
-  furniture.visible=$('furniture').checked;sides.visible=$('walls').checked;dimensions.visible=$('dimensions').checked;
+  furniture.visible=$('furniture').checked;sides.visible=$('walls').checked;dimensions.visible=$('dimensions').checked&&currentView!=='samples';
+  if(sampleDisplay)sampleDisplay.visible=$('samples').checked;
+  if(sampleDimensions)sampleDimensions.visible=$('samples').checked&&$('dimensions').checked;
   if(controls)controls.autoRotate=$('rotate').checked;
 }
 function setProposal(id, updateUrl = true) {
@@ -485,16 +509,19 @@ function setProposal(id, updateUrl = true) {
   document.querySelectorAll('[data-proposal]').forEach(b=>{const active=b.dataset.proposal===id;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
   $('description').textContent=proposals[id].description;$('proposal-title').textContent=proposals[id].title;
   $('tags').replaceChildren(...proposals[id].tags.map(t=>{const s=document.createElement('span');s.textContent=t;return s;}));
-  $('thumbnail').src=proposals[id].render;$('thumbnail').alt=`Render conceptual: ${proposals[id].title}`;
+  $('thumbnail').src=proposals[id].render;$('thumbnail').alt=`Vista de referencia: ${proposals[id].title}`;
   $('fallback-image').src=proposals[id].render;$('fallback-image').alt=`Propuesta ${proposals[id].title} del stand`;
-  $('revision-controls').hidden=id!=='ajustada';
-  if(id!=='ajustada')$('previous-proposals').open=true;
+  $('revision-controls').hidden=!isAdjusted();
+  $('samples-control').hidden=id!=='muestras';$('samples-camera').hidden=id!=='muestras';$('samples-tab').hidden=id!=='muestras';
+  if(id!=='muestras'&&selectedPanel==='samples')selectedPanel='left';
+  if(!isAdjusted())$('previous-proposals').open=true;
   syncPanelUI();
-  if(ready){build();if(id==='ajustada'&&previous!==id)setView('perspective',false);}
+  if(ready){build();if(previous!==id)setView('perspective',false);}
   if(updateUrl)writeUrl();
 }
-function writeUrl(){const url=new URL(location.href);url.searchParams.set('propuesta',current);if(current==='ajustada'){url.searchParams.set('distribucion',panelLayout);url.searchParams.set('foto',benefitPhoto);}else{url.searchParams.delete('distribucion');url.searchParams.delete('foto');}history.replaceState({},'',url);}
+function writeUrl(){const url=new URL(location.href);url.searchParams.set('propuesta',current);if(isAdjusted()){url.searchParams.set('distribucion',panelLayout);url.searchParams.set('foto',benefitPhoto);}else{url.searchParams.delete('distribucion');url.searchParams.delete('foto');}history.replaceState({},'',url);}
 function panelDetails() {
+  if(selectedPanel==='samples')return {title:'Dos muestras · Expositor independiente',src:'assets/concepts/muestras-detalle.jpg',size:'Cada muestra: 93 cm ancho × 56 cm alto'};
   if(selectedPanel==='left')return {title:'Panel izquierdo · '+(panelLayout==='cuadricula'?'Cuadrícula 2 × 2':'Cuatro fotos en fila'),src:panelFiles[panelLayout],size:'244 × 122 cm · horizontal'};
   if(selectedPanel==='right')return {title:'Panel derecho · '+(benefitPhoto==='serviteca'?'Serviteca':'Galpón en el campo'),src:panelFiles[benefitPhoto],size:'244 × 122 cm · horizontal'};
   return {title:'Gigantografía de fondo',src:resourceNames.rearAdjusted,size:'Fondo propuesto: 284 × 212 cm · 3 paños verticales'};
@@ -503,27 +530,32 @@ function syncPanelUI() {
   $('panel-layout').value=panelLayout;$('modal-layout').value=panelLayout;
   $('benefit-photo').value=benefitPhoto;$('modal-photo').value=benefitPhoto;
   const info=panelDetails();$('panel-title').textContent=info.title;$('panel-image').src=info.src;$('panel-image').alt=info.title;$('panel-size').textContent=info.size;
-  $('panel-download').href=info.src;$('panel-original').href=info.src.replace('.jpg','.svg');$('panel-original').hidden=selectedPanel==='back';
+  $('panel-download').href=info.src;$('panel-original').href=info.src.replace('.jpg','.svg');$('panel-original').hidden=!['left','right'].includes(selectedPanel);
+  $('sample-reference').hidden=selectedPanel!=='samples';
   $('modal-layout').parentElement.hidden=selectedPanel!=='left';$('modal-photo').parentElement.hidden=selectedPanel!=='right';
-  $('panel-image-wrap').classList.toggle('back-panel',selectedPanel==='back');
-  $('panel-note').textContent=selectedPanel==='back'?'Recreación frontal del fondo aprobado. Despiece y medidas útiles por confirmar antes de imprimir.':'Gráfica de revisión. Las fotos conservan la calidad del material recibido. Preparación final para impresión pendiente.';
+  $('panel-image-wrap').classList.toggle('back-panel',['back','samples'].includes(selectedPanel));
+  $('panel-note').textContent=selectedPanel==='samples'?'56 × 93 interpretados como 56 cm de alto × 93 cm de ancho. Profundidad y pliegues aproximados según la referencia; apoyos por definir con el montajista.':selectedPanel==='back'?'Recreación frontal del fondo aprobado. Despiece y medidas útiles por confirmar antes de imprimir.':'Gráfica de revisión. Las fotos conservan la calidad del material recibido. Preparación final para impresión pendiente.';
   document.querySelectorAll('[data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===selectedPanel)));
 }
 function changePanels(kind,value) {
   if(kind==='layout'&&['cuadricula','fila'].includes(value))panelLayout=value;
   if(kind==='photo'&&['serviteca','campo'].includes(value))benefitPhoto=value;
-  syncPanelUI();if(ready&&current==='ajustada')build();writeUrl();
+  syncPanelUI();if(ready&&isAdjusted())build();writeUrl();
 }
 const presets = {
   perspective:{position:[3.5,2.4,6.3],target:[0,1.04,0],name:'Perspectiva'},
   front:{position:[0,1.7,7.8],target:[0,1.12,0],name:'Frontal'},
   top:{position:[0,8,.001],target:[0,.05,0],name:'Planta'},
   inside:{position:[0,1.65,3.6],target:[0,1.2,-1.3],name:'Interior'},
+  samples:{position:[-.88,2.22,3.90],target:[.90,1.03,1.06],name:'Muestras'},
 };
 function setView(id, animate=true) {
   if(!ready)return;
   let p=presets[id];if(!p)return;
-  if(current==='ajustada'&&id==='perspective')p={...p,position:[.72,2.32,6.3],target:[0,1.15,0]};
+  currentView=id;
+  if(isAdjusted()&&id==='perspective')p={...p,position:[.72,2.32,6.3],target:[0,1.15,0]};
+  if(id==='samples')$('samples').checked=true;
+  syncVisibility();
   const target=new THREE.Vector3(...p.target);
   const position=new THREE.Vector3(...p.position).sub(target).multiplyScalar(cameraScale).add(target);
   $('rotate').checked=false;controls.autoRotate=false;
@@ -547,7 +579,7 @@ function bindUI() {
   $('panels-modal').addEventListener('click',e=>{if(e.target===$('panels-modal')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}});
   document.querySelectorAll('[data-proposal]').forEach(b=>b.addEventListener('click',()=>setProposal(b.dataset.proposal)));
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
-  ['furniture','walls','dimensions','rotate'].forEach(id=>$(id).addEventListener('change',syncVisibility));
+  ['furniture','walls','dimensions','rotate','samples'].forEach(id=>$(id).addEventListener('change',syncVisibility));
   $('reset').addEventListener('click',()=>setView('perspective'));
   $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(container.requestFullscreen)await container.requestFullscreen();else throw new Error('unavailable');}catch{toast('Tu navegador no permite pantalla completa.');}});
   $('capture').addEventListener('click',()=>{
@@ -555,10 +587,10 @@ function bindUI() {
     renderer.render(scene,camera);renderer.domElement.toBlob(blob=>{if(!blob)return;const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=`Warehouse-${current}-2-D02.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);},'image/png');
   });
   const dialog=$('reference-modal');
-  const showReference=()=>{$('modal-title').textContent=proposals[current].title;$('reference-image').src=proposals[current].render;dialog.showModal();};
+  const showReference=()=>{$('modal-title').textContent=proposals[current].title;$('reference-image').src=proposals[current].render;$('reference-caption').textContent=proposals[current].referenceCaption||'Render ilustrativo de la composición base. Las variantes se revisan en el modelo 3D y en «Ver paneles en detalle». El mobiliario y el bastidor son una propuesta.';dialog.showModal();};
   $('reference').addEventListener('click',showReference);$('reference-mobile').addEventListener('click',showReference);
   $('close-modal').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});
-  addEventListener('popstate',()=>{const q=new URL(location.href).searchParams;panelLayout=q.get('distribucion')==='fila'?'fila':'cuadricula';benefitPhoto=q.get('foto')==='campo'?'campo':'serviteca';const id=q.get('propuesta');setProposal(proposals[id]?id:'ajustada',false);});
+  addEventListener('popstate',()=>{const q=new URL(location.href).searchParams;panelLayout=q.get('distribucion')==='fila'?'fila':'cuadricula';benefitPhoto=q.get('foto')==='campo'?'campo':'serviteca';const id=q.get('propuesta');setProposal(proposals[id]?id:'muestras',false);});
 }
 function toast(message){const old=$('toast');if(old)old.remove();const el=document.createElement('div');el.id='toast';el.textContent=message;el.setAttribute('role','status');Object.assign(el.style,{position:'fixed',bottom:'24px',left:'50%',transform:'translateX(-50%)',background:NAVY,color:'#fff',padding:'12px 18px',borderRadius:'8px',zIndex:99,fontSize:'12px',maxWidth:'90vw'});document.body.append(el);setTimeout(()=>el.remove(),3500);}
 async function init() {
@@ -578,9 +610,9 @@ async function init() {
     const entries=await Promise.all(Object.entries(resourceNames).map(async([key,src])=>[key,await loadImage(src)]));assetImages=Object.fromEntries(entries);
     ready=true;build();setView('perspective',false);resize();new ResizeObserver(resize).observe(container);$('loading').hidden=true;requestAnimationFrame(animate);
     // Estado legible para comprobaciones del visor y futuras integraciones.
-    window.standViewer={get proposal(){return current;},get dimensions(){return {width:3,depth:3,height:2.5};},get panelOptions(){return {layout:panelLayout,photo:benefitPhoto};},get scene(){return scene;},get renderer(){return renderer;},get camera(){return camera;},get booth(){return booth;},get furniture(){return furniture;},get sides(){return sides;},setProposal,setView};
-  }catch(err){console.error(err);$('loading').hidden=true;$('error').hidden=false;container.classList.add('no-webgl');['furniture','walls','dimensions','rotate'].forEach(id=>$(id).disabled=true);if(booth){ready=false;disposeGroup(booth);}}
+    window.standViewer={get proposal(){return current;},get dimensions(){return {width:3,depth:3,height:2.5};},get panelOptions(){return {layout:panelLayout,photo:benefitPhoto};},get sampleSpec(){return {...sampleSpec};},get sampleDisplay(){return sampleDisplay;},get scene(){return scene;},get renderer(){return renderer;},get camera(){return camera;},get booth(){return booth;},get furniture(){return furniture;},get sides(){return sides;},setProposal,setView};
+  }catch(err){console.error(err);$('loading').hidden=true;$('error').hidden=false;container.classList.add('no-webgl');['furniture','walls','dimensions','rotate','samples'].forEach(id=>$(id).disabled=true);if(booth){ready=false;disposeGroup(booth);}}
 }
 const initial=new URL(location.href).searchParams.get('propuesta');
-setProposal(proposals[initial]?initial:'ajustada',false);bindUI();
+setProposal(proposals[initial]?initial:'muestras',false);bindUI();
 init();

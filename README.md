@@ -1,10 +1,12 @@
 # Warehouse Solutions · Stand EDIFICA 3D
 
-Visor web interactivo para presentar la propuesta ajustada y seis conceptos anteriores del stand **2-D02**, con una envolvente nominal de **3 × 3 × 2,5 m**. Publicado en [GitHub Pages](https://xaulosky.github.io/stand3d/). No necesita Node, instalación de paquetes, backend ni claves de API. Three.js y OrbitControls están incluidos en el proyecto; no se cargan desde un CDN.
+Visor web interactivo para presentar dos versiones de la propuesta ajustada y seis conceptos anteriores del stand **2-D02**, con una envolvente nominal de **3 × 3 × 2,5 m**. Publicado en [GitHub Pages](https://xaulosky.github.io/stand3d/). No necesita Node, instalación de paquetes, backend ni claves de API. Three.js y OrbitControls están incluidos en el proyecto; no se cargan desde un CDN.
 
 ## Qué incluye
 
-- Propuesta ajustada como vista inicial y seis modelos anteriores: Corporativa, Arco industrial, Galería de proyectos, Cuatro beneficios, Minimalista y Laboratorio de soluciones.
+- Versión 2 con muestras como vista inicial; versión 1 con gráficas y seis modelos anteriores: Corporativa, Arco industrial, Galería de proyectos, Cuatro beneficios, Minimalista y Laboratorio de soluciones.
+- Dos muestras de chapa plegada de **93 cm de ancho × 56 cm de alto**, modeladas con volumen en un expositor independiente al frente derecho.
+- Cámara Muestras, control de visibilidad independiente y vista de detalle descargable con enlace a la imagen recibida.
 - Dos paneles laterales de **244 × 122 cm**, con el borde inferior a **80 cm** del piso.
 - Comparación de fotos en cuadrícula 2 × 2 o en fila; foto de apoyo de serviteca o galpón en el campo.
 - Vista plana ampliable de ambos paneles y del fondo, con descargas JPG y originales SVG de los laterales.
@@ -15,10 +17,20 @@ Visor web interactivo para presentar la propuesta ajustada y seis conceptos ante
 - Render conceptual de referencia para cada alternativa.
 - Logo original y fotografías extraídas del Excel entregado por el cliente.
 - Diseño adaptable a computador, tablet y celular.
-- Enlaces directos mediante `?propuesta=` seguido de `ajustada`, `corporativa`, `arco`, `galeria`, `beneficios`, `minimalista` o `laboratorio`. En la ajustada, `distribucion=cuadricula|fila` y `foto=serviteca|campo` conservan las variantes elegidas.
+- Enlaces directos mediante `?propuesta=` seguido de `muestras`, `ajustada`, `corporativa`, `arco`, `galeria`, `beneficios`, `minimalista` o `laboratorio`. En las dos versiones ajustadas, `distribucion=cuadricula|fila` y `foto=serviteca|campo` conservan las variantes elegidas.
 - Vista de renders cuando el navegador no puede inicializar los gráficos 3D.
 
 ## Revisión del 9 de octubre de 2026
+
+### Segunda versión con muestras
+
+La indicación «56 × 93 ancho» se interpreta como **56 cm de alto × 93 cm de ancho por muestra**. Las dos piezas siguen la forma de chapa plegada de `assets/revision/muestras-referencia.png`. Ancho y alto se representan a escala; la proyección de **38 cm** y la geometría de los pliegues son aproximaciones de la imagen, pendientes de las medidas reales del perfil.
+
+El expositor está al frente derecho, dentro de la tarima, y deja aproximadamente 91 cm entre su base y el borde del mesón de recepción. Las piezas se exhiben en dos niveles, con centros a 0,62 y 1,35 m del piso. Se conservan los dos paneles de 244 × 122 cm, el fondo y el mobiliario de la primera versión. El rack se representa como una estructura separada; sus apoyos, uniones y estabilidad se definen con el montajista.
+
+`sample-display.js` contiene el modelo de las piezas y el expositor. Las imágenes `assets/concepts/muestras.jpg` y `muestras-detalle.jpg` son capturas del modelo 3D, no imágenes generadas con IA. El botón **Muestras** acerca la cámara; en esa vista sólo se muestran las cotas de las piezas para evitar que se superpongan las medidas generales del stand.
+
+### Gráficas y bastidor
 
 Se aplica el Excel actualizado y la transcripción de las indicaciones de Claudia:
 
@@ -83,6 +95,7 @@ Abre `http://localhost:8000`. En algunos equipos el comando es `python3` o `py`.
 | --- | --- |
 | `config.js` | Textos, descripción de propuestas, colores y rutas de recursos. |
 | `panel-data.js` | Nueve ventajas, aplicaciones y rutas de las composiciones revisadas. |
+| `sample-display.js` | Geometría de las dos muestras, medidas y expositor independiente. |
 | `tools/build-panels.mjs` | Generador reproducible de los cuatro SVG laterales. |
 | `assets/panels/` | Dos distribuciones izquierdas y dos composiciones derechas, en SVG y JPG. |
 | `assets/revision/` | Recursos extraídos del Excel actualizado y recreación del fondo. |
@@ -110,4 +123,4 @@ Three.js y OrbitControls: licencia MIT, incluida en `assets/vendor/THREE-LICENSE
 
 ## Verificación de esta entrega
 
-Comprobado en Chromium con WebGL: siete propuestas, carga desde una subcarpeta, recursos locales sin peticiones externas, enlaces directos, controles de visibilidad, cambios de cámara, giro con mouse, modal de referencia y descarga PNG. Revisado en formatos de escritorio y celular. El mobiliario está dentro de la planta de 3 × 3 m. Se comprueba además la geometría de ambos paneles (244 × 122 cm), su altura, la envolvente de todos los volúmenes, cambios reales de texturas, persistencia de variantes al recargar, descargas y lectura de paneles sin WebGL. Despliegue automático en GitHub Pages mediante Actions.
+Comprobado en Chromium con WebGL: ocho propuestas, carga desde una subcarpeta, recursos locales sin peticiones externas, enlaces directos, controles de visibilidad, cambios de cámara, giro con mouse, modal de referencia y descarga PNG. Revisado en formatos de escritorio y celular. El mobiliario está dentro de la planta de 3 × 3 m. Se comprueba además la geometría de ambos paneles (244 × 122 cm), la de las dos muestras (93 × 56 cm), la envolvente del expositor, cambios reales de texturas, persistencia de variantes al recargar, descargas y lectura de paneles sin WebGL. Despliegue automático en GitHub Pages mediante Actions.

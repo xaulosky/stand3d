@@ -16,6 +16,12 @@ export const benefits = [
   { icon: 'modular', title: 'DISEÑO MODULAR', detail: 'Ampliaciones según requerimiento.' },
 ];
 export const proposals = {
+  muestras: {
+    title: 'Versión 2 · Con muestras', description: 'Dos muestras de chapa plegada, de 93 cm de ancho × 56 cm de alto cada una, en un expositor independiente de dos niveles al frente derecho. El acceso queda al centro. Conserva los paneles laterales, las nueve ventajas y el fondo de la propuesta ajustada.',
+    tags: ['2 muestras · 93 × 56 cm', 'Expositor independiente', 'Acceso central'],
+    render: 'assets/concepts/muestras.jpg',
+    referenceCaption: 'Vista del modelo 3D con las dos muestras. Ancho y alto a escala; profundidad, pliegues y soportes aproximados a partir de la imagen recibida. Las variantes gráficas se revisan en el visor.',
+  },
   ajustada: {
     title: 'Propuesta ajustada', description: 'Dos paneles horizontales de 244 × 122 cm: aplicaciones y dibujos técnicos a la izquierda; nueve ventajas y nuevos desarrollos a la derecha. El fondo conserva la bodega curva. Bastidor independiente como propuesta de montaje.',
     tags: ['Paneles 244 × 122 cm', 'Nueve ventajas', 'Bastidor independiente'],

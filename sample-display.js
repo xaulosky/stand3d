@@ -3,7 +3,7 @@ import * as THREE from 'three';
 // 93 cm de ancho × 56 cm de alto, según la medida facilitada.
 // La profundidad y los pliegues son aproximaciones visuales de la referencia.
 export const sampleSpec = Object.freeze({width:.93,height:.56,projection:.38,count:2});
-export const displayPosition = Object.freeze({x:.90,y:.08,z:.93});
+export const displayPosition = Object.freeze({x:.80,y:.08,z:-1.32});
 export const sampleLevels = Object.freeze([.54,1.27]);
 
 function block(parent,w,h,d,x,y,z,color,metalness=.35) {

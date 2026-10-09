@@ -17,8 +17,8 @@ export const competitiveBenefits = [
   {icon:'measure', title:['FABRICACIÓN EN','TERRENO A MEDIDA'], detail:['Adaptable a distintas','configuraciones.']},
 ];
 export const panelFiles = {
-  cuadricula:'assets/panels/izquierdo-cuadricula.jpg',
-  fila:'assets/panels/izquierdo-fila.jpg',
-  serviteca:'assets/panels/derecho-serviteca.jpg',
-  campo:'assets/panels/derecho-campo.jpg',
+  cuadricula:'assets/panels/muro-izquierdo-cuadricula.jpg',
+  fila:'assets/panels/muro-izquierdo-fila.jpg',
+  serviteca:'assets/panels/muro-derecho-serviteca.jpg',
+  campo:'assets/panels/muro-derecho-campo.jpg',
 };

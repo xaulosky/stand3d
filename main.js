@@ -1,14 +1,19 @@
 import * as THREE from 'three';
 import { OrbitControls } from './assets/vendor/OrbitControls.js';
-import { brand, photos, benefits, proposals } from './config.js?v=1.2';
+import { brand, photos, benefits, proposals } from './config.js?v=2.0';
+import { panelFiles } from './panel-data.js?v=2.0';
 
 const $ = (id) => document.getElementById(id);
 const container = $('viewer');
 const NAVY = brand.navy, YELLOW = brand.yellow;
 let scene, camera, renderer, controls, booth, furniture, sides, dimensions;
-let current = 'corporativa', cameraMotion = null, assetImages = {}, ready = false;
+let current = 'ajustada', cameraMotion = null, assetImages = {}, ready = false;
 let cameraScale = 1;
-const resourceNames = { logo: brand.logo, ...photos };
+const query = new URL(location.href).searchParams;
+let panelLayout = query.get('distribucion') === 'fila' ? 'fila' : 'cuadricula';
+let benefitPhoto = query.get('foto') === 'campo' ? 'campo' : 'serviteca';
+let selectedPanel = 'left';
+const resourceNames = { logo: brand.logo, ...photos, ...Object.fromEntries(Object.entries(panelFiles).map(([key,src])=>['panel_'+key,src])), rearAdjusted:'assets/revision/fondo-aprobado.jpg' };
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function loadImage(src) {
@@ -39,6 +44,9 @@ function contain(ctx, img, x, y, w, h) {
 function texture(c) {
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8); return t;
+}
+function imageTexture(img) {
+  const t=new THREE.Texture(img);t.colorSpace=THREE.SRGBColorSpace;t.anisotropy=Math.min(renderer.capabilities.getMaxAnisotropy(),8);t.needsUpdate=true;return t;
 }
 function labelTexture(title, subtitle = '', color = NAVY) {
   const [c, ctx] = canvas(1024, 1040, color);
@@ -357,10 +365,63 @@ function makeDimensions() {
   line([1.73,.00,-1.5],[1.73,2.5,-1.5]);
   [0,2.5].forEach(y=>line([1.61,y,-1.5],[1.83,y,-1.5]));dimensionLabel('2,50 m',1.90,1.28,-1.5);
 }
+function buildAdjusted() {
+  const steel='#67727d';
+  const frames=new THREE.Group();frames.name='Bastidor independiente conceptual';booth.add(frames);
+  const panels=new THREE.Group();panels.name='Paneles de PVC';booth.add(panels);
+  // Paredes del recinto: blancas. Las gráficas se soportan en una estructura separada.
+  box(booth,3,.07,3,0,.035,0,'#89909a',{roughness:1});
+  box(booth,2.94,.008,2.94,0,.074,0,'#b5b9bd',{roughness:1});
+  box(booth,2.96,2.15,.028,0,1.155,-1.477,'#f4f5f6');
+  for(const sign of [-1,1]) {
+    box(sides,.028,2.15,2.94,sign*1.477,1.155,0,'#d5e2ed',{transparent:true,opacity:.07,depthWrite:false});
+    const [plain]=canvas(4,4,'#f7f8f9');plane(sides,2.94,2.14,sign*1.459,1.155,0,texture(plain),sign<0?Math.PI/2:-Math.PI/2);
+    for(const z of [-1.48,1.48])box(booth,.04,2.23,.04,sign*1.48,1.185,z,'#aebbc6',{metalness:.7});
+    box(sides,.037,.035,2.97,sign*1.48,2.244,0,'#aebbc6',{metalness:.7});
+    for(const z of [-.5,.5])box(sides,.026,2.15,.018,sign*1.446,1.155,z,'#aebbc6',{metalness:.6});
+    // Estructura interior en U, con apoyos dentro de la planta. Se representa sin uniones al recinto.
+    for(const z of [-1.39,1.39]) {
+      box(frames,.04,2.42,.04,sign*1.39,1.29,z,steel,{metalness:.65});
+      box(frames,.46,.016,.13,sign*1.22,.087,z,steel,{metalness:.6});
+    }
+    box(frames,.036,.036,2.80,sign*1.39,2.228,0,steel,{metalness:.65});
+    for(const z of [-1.16,1.16]) {
+      box(frames,.03,1.96,.03,sign*1.39,1.06,z,steel,{metalness:.65});
+      box(frames,.34,.012,.12,sign*1.245,.085,z,steel,{metalness:.6});
+    }
+    // Ancho 2,44 m y alto 1,22 m exactos. Borde inferior a 0,80 m.
+    const backing=box(panels,.018,1.22,2.44,sign*1.372,1.41,0,'#f4f5f6',{transparent:true,opacity:.12,depthWrite:false});
+    backing.name=sign<0?'Soporte del panel izquierdo':'Soporte del panel derecho';
+    const face=plane(panels,2.44,1.22,sign*1.361,1.41,0,imageTexture(assetImages['panel_'+(sign<0?panelLayout:benefitPhoto)]),sign<0?Math.PI/2:-Math.PI/2);
+    face.name=sign<0?'Panel izquierdo 244 × 122 cm':'Panel derecho 244 × 122 cm';
+    face.userData={kind:'printed-panel',side:sign<0?'left':'right',width:2.44,height:1.22,bottom:.80,variant:sign<0?panelLayout:benefitPhoto};
+    for(const y of [.79,2.04])box(frames,.026,.022,2.47,sign*1.38,y,0,steel,{metalness:.6});
+    for(const z of [-1.234,1.234])box(frames,.026,1.27,.024,sign*1.38,1.415,z,steel,{metalness:.6});
+  }
+  // Fondo ilustrativo en tres paños verticales. Tamaño útil propuesto, pendiente de medir en recinto.
+  box(panels,2.84,2.12,.016,0,1.15,-1.412,'#f5f5f5');
+  const rear=plane(panels,2.84,2.12,0,1.15,-1.402,imageTexture(assetImages.rearAdjusted));
+  rear.name='Gigantografía de fondo';rear.userData={kind:'backdrop',width:2.84,height:2.12,sections:3};
+  for(const x of [-2.84/6,2.84/6])box(panels,.003,2.12,.002,x,1.15,-1.400,'#9aabba',{transparent:true,opacity:.42});
+  for(const x of [-1.39,0,1.39])box(frames,.035,2.12,.035,x,1.15,-1.432,steel,{metalness:.65});
+  box(frames,2.82,.035,.035,0,2.228,-1.42,steel,{metalness:.65});
+  box(frames,2.82,.035,.035,0,.085,-1.42,steel,{metalness:.65});
+  // Cenefa en el pórtico independiente, dentro de los 2,5 m totales.
+  box(frames,2.82,.254,.030,0,2.373,1.397,NAVY);
+  plane(frames,2.82,.254,0,2.373,1.414,fasciaTexture());
+  for(const x of [-.95,0,.95]) {
+    cylinder(frames,.02,.02,.11,x,2.17,1.31,steel);
+    const lamp=cylinder(frames,.04,.04,.14,x,2.10,1.28,'#fff');lamp.rotation.x=-.40;
+  }
+  counter(furniture);
+  table(furniture,.39,-.65);chair(furniture,-.08,-.62,Math.PI/2);chair(furniture,.87,-.62,-Math.PI/2);
+  makeDimensions();syncVisibility();
+}
 function build() {
   disposeGroup(booth);booth = new THREE.Group();scene.add(booth);
   sides = new THREE.Group();booth.add(sides);
   furniture = new THREE.Group();booth.add(furniture);
+  if(current==='ajustada'){buildAdjusted();return;}
   // La envolvente completa incluyendo la tarima y cenefa mide 3 × 3 × 2,5 m.
   box(booth,3,.07,3,0,.035,0,'#89909a',{roughness:1});
   box(booth,2.94,.008,2.94,0,.074,0,'#b3b8bd',{roughness:1});
@@ -420,14 +481,38 @@ function syncVisibility() {
   if(controls)controls.autoRotate=$('rotate').checked;
 }
 function setProposal(id, updateUrl = true) {
-  if(!proposals[id])return;current=id;
+  if(!proposals[id])return;const previous=current;current=id;
   document.querySelectorAll('[data-proposal]').forEach(b=>{const active=b.dataset.proposal===id;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));});
   $('description').textContent=proposals[id].description;$('proposal-title').textContent=proposals[id].title;
   $('tags').replaceChildren(...proposals[id].tags.map(t=>{const s=document.createElement('span');s.textContent=t;return s;}));
   $('thumbnail').src=proposals[id].render;$('thumbnail').alt=`Render conceptual: ${proposals[id].title}`;
   $('fallback-image').src=proposals[id].render;$('fallback-image').alt=`Propuesta ${proposals[id].title} del stand`;
-  if(ready)build();
-  if(updateUrl) {const url=new URL(location.href);url.searchParams.set('propuesta',id);history.replaceState({},'',url);}
+  $('revision-controls').hidden=id!=='ajustada';
+  if(id!=='ajustada')$('previous-proposals').open=true;
+  syncPanelUI();
+  if(ready){build();if(id==='ajustada'&&previous!==id)setView('perspective',false);}
+  if(updateUrl)writeUrl();
+}
+function writeUrl(){const url=new URL(location.href);url.searchParams.set('propuesta',current);if(current==='ajustada'){url.searchParams.set('distribucion',panelLayout);url.searchParams.set('foto',benefitPhoto);}else{url.searchParams.delete('distribucion');url.searchParams.delete('foto');}history.replaceState({},'',url);}
+function panelDetails() {
+  if(selectedPanel==='left')return {title:'Panel izquierdo · '+(panelLayout==='cuadricula'?'Cuadrícula 2 × 2':'Cuatro fotos en fila'),src:panelFiles[panelLayout],size:'244 × 122 cm · horizontal'};
+  if(selectedPanel==='right')return {title:'Panel derecho · '+(benefitPhoto==='serviteca'?'Serviteca':'Galpón en el campo'),src:panelFiles[benefitPhoto],size:'244 × 122 cm · horizontal'};
+  return {title:'Gigantografía de fondo',src:resourceNames.rearAdjusted,size:'Fondo propuesto: 284 × 212 cm · 3 paños verticales'};
+}
+function syncPanelUI() {
+  $('panel-layout').value=panelLayout;$('modal-layout').value=panelLayout;
+  $('benefit-photo').value=benefitPhoto;$('modal-photo').value=benefitPhoto;
+  const info=panelDetails();$('panel-title').textContent=info.title;$('panel-image').src=info.src;$('panel-image').alt=info.title;$('panel-size').textContent=info.size;
+  $('panel-download').href=info.src;$('panel-original').href=info.src.replace('.jpg','.svg');$('panel-original').hidden=selectedPanel==='back';
+  $('modal-layout').parentElement.hidden=selectedPanel!=='left';$('modal-photo').parentElement.hidden=selectedPanel!=='right';
+  $('panel-image-wrap').classList.toggle('back-panel',selectedPanel==='back');
+  $('panel-note').textContent=selectedPanel==='back'?'Recreación frontal del fondo aprobado. Despiece y medidas útiles por confirmar antes de imprimir.':'Gráfica de revisión. Las fotos conservan la calidad del material recibido. Preparación final para impresión pendiente.';
+  document.querySelectorAll('[data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===selectedPanel)));
+}
+function changePanels(kind,value) {
+  if(kind==='layout'&&['cuadricula','fila'].includes(value))panelLayout=value;
+  if(kind==='photo'&&['serviteca','campo'].includes(value))benefitPhoto=value;
+  syncPanelUI();if(ready&&current==='ajustada')build();writeUrl();
 }
 const presets = {
   perspective:{position:[3.5,2.4,6.3],target:[0,1.04,0],name:'Perspectiva'},
@@ -437,7 +522,8 @@ const presets = {
 };
 function setView(id, animate=true) {
   if(!ready)return;
-  const p=presets[id];if(!p)return;
+  let p=presets[id];if(!p)return;
+  if(current==='ajustada'&&id==='perspective')p={...p,position:[.72,2.32,6.3],target:[0,1.15,0]};
   const target=new THREE.Vector3(...p.target);
   const position=new THREE.Vector3(...p.position).sub(target).multiplyScalar(cameraScale).add(target);
   $('rotate').checked=false;controls.autoRotate=false;
@@ -452,6 +538,13 @@ function animate(now) {
   controls.update();renderer.render(scene,camera);
 }
 function bindUI() {
+  ['panel-layout','modal-layout'].forEach(id=>$(id).addEventListener('change',e=>changePanels('layout',e.target.value)));
+  ['benefit-photo','modal-photo'].forEach(id=>$(id).addEventListener('change',e=>changePanels('photo',e.target.value)));
+  $('open-panels').addEventListener('click',()=>{syncPanelUI();$('panels-modal').showModal();});
+  $('close-panels').addEventListener('click',()=>$('panels-modal').close());
+  document.querySelectorAll('[data-panel]').forEach(b=>b.addEventListener('click',()=>{selectedPanel=b.dataset.panel;syncPanelUI();}));
+  $('panel-zoom').addEventListener('click',()=>{const zoomed=$('panel-image-wrap').classList.toggle('zoomed');$('panel-zoom').setAttribute('aria-pressed',String(zoomed));$('panel-zoom').textContent=zoomed?'Ajustar al ancho':'Ampliar gráfica';});
+  $('panels-modal').addEventListener('click',e=>{if(e.target===$('panels-modal')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}});
   document.querySelectorAll('[data-proposal]').forEach(b=>b.addEventListener('click',()=>setProposal(b.dataset.proposal)));
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
   ['furniture','walls','dimensions','rotate'].forEach(id=>$(id).addEventListener('change',syncVisibility));
@@ -465,7 +558,7 @@ function bindUI() {
   const showReference=()=>{$('modal-title').textContent=proposals[current].title;$('reference-image').src=proposals[current].render;dialog.showModal();};
   $('reference').addEventListener('click',showReference);$('reference-mobile').addEventListener('click',showReference);
   $('close-modal').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();}});
-  addEventListener('popstate',()=>setProposal(new URL(location.href).searchParams.get('propuesta')||'corporativa',false));
+  addEventListener('popstate',()=>{const q=new URL(location.href).searchParams;panelLayout=q.get('distribucion')==='fila'?'fila':'cuadricula';benefitPhoto=q.get('foto')==='campo'?'campo':'serviteca';const id=q.get('propuesta');setProposal(proposals[id]?id:'ajustada',false);});
 }
 function toast(message){const old=$('toast');if(old)old.remove();const el=document.createElement('div');el.id='toast';el.textContent=message;el.setAttribute('role','status');Object.assign(el.style,{position:'fixed',bottom:'24px',left:'50%',transform:'translateX(-50%)',background:NAVY,color:'#fff',padding:'12px 18px',borderRadius:'8px',zIndex:99,fontSize:'12px',maxWidth:'90vw'});document.body.append(el);setTimeout(()=>el.remove(),3500);}
 async function init() {
@@ -485,9 +578,9 @@ async function init() {
     const entries=await Promise.all(Object.entries(resourceNames).map(async([key,src])=>[key,await loadImage(src)]));assetImages=Object.fromEntries(entries);
     ready=true;build();setView('perspective',false);resize();new ResizeObserver(resize).observe(container);$('loading').hidden=true;requestAnimationFrame(animate);
     // Estado legible para comprobaciones del visor y futuras integraciones.
-    window.standViewer={get proposal(){return current;},get dimensions(){return {width:3,depth:3,height:2.5};},get scene(){return scene;},get renderer(){return renderer;},get camera(){return camera;},get booth(){return booth;},get furniture(){return furniture;},get sides(){return sides;},setProposal,setView};
+    window.standViewer={get proposal(){return current;},get dimensions(){return {width:3,depth:3,height:2.5};},get panelOptions(){return {layout:panelLayout,photo:benefitPhoto};},get scene(){return scene;},get renderer(){return renderer;},get camera(){return camera;},get booth(){return booth;},get furniture(){return furniture;},get sides(){return sides;},setProposal,setView};
   }catch(err){console.error(err);$('loading').hidden=true;$('error').hidden=false;container.classList.add('no-webgl');['furniture','walls','dimensions','rotate'].forEach(id=>$(id).disabled=true);if(booth){ready=false;disposeGroup(booth);}}
 }
 const initial=new URL(location.href).searchParams.get('propuesta');
-setProposal(proposals[initial]?initial:'corporativa',false);bindUI();
+setProposal(proposals[initial]?initial:'ajustada',false);bindUI();
 init();

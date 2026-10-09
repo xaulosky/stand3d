@@ -21,3 +21,23 @@
   .topbar{gap:10px}.topbar h2{font-size:17px;max-width:210px;line-height:1.25}
   .project-info{flex:none}
 }
+
+/* Propuesta revisada: selección principal, variantes y lectura de paneles. */
+.featured{margin-bottom:12px;min-height:68px}
+.previous-proposals{font-size:11px;color:#6a7f8f}.previous-proposals summary{cursor:pointer;padding:9px 0;list-style-position:inside}.previous-proposals[open] summary{margin-bottom:6px}.previous-proposals .proposal{min-height:52px;padding:9px 10px}.previous-proposals .proposal small{display:none}
+.revision-controls{display:flex;align-items:end;gap:18px;margin:0 22px 15px;padding:13px 17px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.revision-controls label{display:flex;flex-direction:column;gap:5px;font-size:10px;color:#657d90;flex:1;max-width:235px}
+select{font:inherit;max-width:100%;border:1px solid #d9e2e8;border-radius:6px;background:#f7f9fa;color:var(--navy);padding:8px 10px;cursor:pointer;outline-offset:2px}
+.revision-controls select{font-size:12px}.panel-open{border:0;background:var(--navy);color:#fff;border-radius:6px;padding:10px 14px;font-size:11px;margin-left:auto;white-space:nowrap}
+.panels-modal{width:min(1400px,97vw);max-height:96dvh}.panel-tabs{display:flex;gap:7px;margin:4px 0 14px}.panel-tabs button{padding:8px 17px;background:#f0f4f7;border:0;border-radius:6px;color:#6a7f8f;font-size:12px}.panel-tabs button[aria-pressed=true]{background:var(--navy);color:white}
+.panel-variants{display:flex;align-items:center;gap:18px;flex-wrap:wrap;padding:0 0 14px}.panel-variants label{display:flex;align-items:center;gap:7px;font-size:11px;color:#62798b}.panel-variants select{font-size:11px;padding:7px}.panel-variants button{border:1px solid #d9e2e8;background:white;color:var(--navy);border-radius:6px;padding:7px 10px;font-size:11px;margin-left:auto}
+.panel-image-wrap{overflow:auto;max-height:62dvh;background:#eef2f5;border:1px solid #dfe6ea;border-radius:6px}.panel-image-wrap img{width:100%;height:auto;display:block}.panel-image-wrap.zoomed img{width:2440px;max-width:none}.panel-image-wrap.back-panel img{max-height:60dvh;width:auto;max-width:100%;margin:auto}.panel-image-wrap.zoomed.back-panel img{width:1600px;max-width:none;max-height:none}
+.panel-meta{display:flex;align-items:center;gap:18px;padding:12px 0 0;font-size:11px;flex-wrap:wrap}.panel-meta>span{margin-right:auto;color:#718695}.panel-meta a{color:var(--navy);text-underline-offset:3px}
+@media(max-width:1100px){.revision-controls{gap:10px;margin-left:20px;margin-right:20px}.panel-open{padding:10px;font-size:10px}.revision-controls label{min-width:0}}
+@media(max-width:760px){
+  .sidebar{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px 14px}
+  .brand{flex:1}.featured{width:auto;flex:1;min-width:165px;min-height:44px;margin:0;padding:8px;gap:6px}.featured .number{display:none}.featured strong{font-size:11px}.featured small{display:block;font-size:8px;margin-top:2px}
+  .previous-proposals{width:100%;font-size:9px}.previous-proposals summary{padding:2px 0}.previous-proposals .proposals{margin:8px 0 2px}.previous-proposals .proposal{min-height:44px}
+  .topbar{padding:12px 16px}.revision-controls{margin:0 10px 10px;padding:10px;gap:8px;flex-wrap:wrap}.revision-controls label{max-width:none;flex:1;min-width:120px;font-size:9px}.revision-controls select{font-size:10px;padding:7px}.panel-open{width:100%;padding:8px}
+  .workspace{min-height:590px}.panel-variants{gap:9px}.panel-variants label{font-size:10px}.panel-variants button{margin:0}.panel-tabs{gap:5px}.panel-tabs button{padding:7px 12px;font-size:11px}.panel-meta{font-size:10px;gap:9px}.panel-meta>span{width:100%}.panel-image-wrap{max-height:52dvh}
+}

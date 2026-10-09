@@ -16,6 +16,11 @@ export const benefits = [
   { icon: 'modular', title: 'DISEÑO MODULAR', detail: 'Ampliaciones según requerimiento.' },
 ];
 export const proposals = {
+  ajustada: {
+    title: 'Propuesta ajustada', description: 'Dos paneles horizontales de 244 × 122 cm: aplicaciones y dibujos técnicos a la izquierda; nueve ventajas y nuevos desarrollos a la derecha. El fondo conserva la bodega curva. Bastidor independiente como propuesta de montaje.',
+    tags: ['Paneles 244 × 122 cm', 'Nueve ventajas', 'Bastidor independiente'],
+    render: 'assets/concepts/ajustada.jpg',
+  },
   corporativa: {
     title: 'Corporativa', description: 'La marca y una gran imagen de hangar reciben al visitante. Las soluciones y sus beneficios se distribuyen en los laterales, dejando espacio para conversar.',
     tags: ['Gráfica en PVC', 'Fondo protagonista', 'Montaje sencillo'],

@@ -1,10 +1,13 @@
 # Warehouse Solutions · Stand EDIFICA 3D
 
-Visor web interactivo para presentar seis propuestas del stand **2-D02**, con una envolvente nominal de **3 × 3 × 2,5 m**. Publicado en [GitHub Pages](https://xaulosky.github.io/stand3d/). No necesita Node, instalación de paquetes, backend ni claves de API. Three.js y OrbitControls están incluidos en el proyecto; no se cargan desde un CDN.
+Visor web interactivo para presentar la propuesta ajustada y seis conceptos anteriores del stand **2-D02**, con una envolvente nominal de **3 × 3 × 2,5 m**. Publicado en [GitHub Pages](https://xaulosky.github.io/stand3d/). No necesita Node, instalación de paquetes, backend ni claves de API. Three.js y OrbitControls están incluidos en el proyecto; no se cargan desde un CDN.
 
 ## Qué incluye
 
-- Seis modelos: Corporativa, Arco industrial, Galería de proyectos, Cuatro beneficios, Minimalista y Laboratorio de soluciones.
+- Propuesta ajustada como vista inicial y seis modelos anteriores: Corporativa, Arco industrial, Galería de proyectos, Cuatro beneficios, Minimalista y Laboratorio de soluciones.
+- Dos paneles laterales de **244 × 122 cm**, con el borde inferior a **80 cm** del piso.
+- Comparación de fotos en cuadrícula 2 × 2 o en fila; foto de apoyo de serviteca o galpón en el campo.
+- Vista plana ampliable de ambos paneles y del fondo, con descargas JPG y originales SVG de los laterales.
 - Giro, zoom y desplazamiento mediante mouse o pantalla táctil.
 - Vistas en perspectiva, frontal, planta e interior.
 - Controles para mostrar mobiliario, laterales, dimensiones y giro automático.
@@ -12,10 +15,25 @@ Visor web interactivo para presentar seis propuestas del stand **2-D02**, con un
 - Render conceptual de referencia para cada alternativa.
 - Logo original y fotografías extraídas del Excel entregado por el cliente.
 - Diseño adaptable a computador, tablet y celular.
-- Enlaces directos mediante `?propuesta=` seguido de `corporativa`, `arco`, `galeria`, `beneficios`, `minimalista` o `laboratorio`.
+- Enlaces directos mediante `?propuesta=` seguido de `ajustada`, `corporativa`, `arco`, `galeria`, `beneficios`, `minimalista` o `laboratorio`. En la ajustada, `distribucion=cuadricula|fila` y `foto=serviteca|campo` conservan las variantes elegidas.
 - Vista de renders cuando el navegador no puede inicializar los gráficos 3D.
 
-## Nuevas alternativas
+## Revisión del 9 de octubre de 2026
+
+Se aplica el Excel actualizado y la transcripción de las indicaciones de Claudia:
+
+- **Izquierda:** una plancha horizontal con las cuatro aplicaciones y una columna de dibujos técnicos originales. La cuadrícula 2 × 2 es la composición inicial. Los títulos y usos quedan fuera de las fotografías.
+- **Derecha:** otra plancha horizontal del mismo tamaño, con las nueve ventajas numeradas en el Excel, ahora con iconos y descripciones. Incluye Gran luz libre y un bloque de Nuevos desarrollos (casas, cabañas, lodge y refugios de montaña). La serviteca es la fotografía de apoyo inicial. Se ofrece una segunda composición con el galpón en el campo.
+- **Fondo:** recreación frontal de la gigantografía del hangar aprobada visualmente, con título y subtítulo conservados. Se representa un área útil provisional de **284 × 212 cm**, dividida en **tres paños verticales**.
+- **Montaje:** bastidor interior independiente en U, soportes y bases ilustrativos, sin adhesivos ni uniones modeladas a las paredes del recinto. El bastidor y la cenefa respetan la envolvente nominal de 3 × 3 × 2,5 m. El montajista debe definir perfiles, uniones y estabilidad; la representación no constituye un diseño estructural ni una autorización del organizador.
+
+Decisiones de diseño adoptadas: panel derecho del mismo tamaño que el izquierdo; Nuevos desarrollos dentro de la misma plancha; uso de Serviteca redactado como talleres y servicios automotrices para corresponder con la fotografía. Las fotografías de esquiadores permanecen bajo Techo contenedor, conforme a la indicación de Claudia. Los retoques fotográficos quedan para cuando el cliente entregue las versiones definitivas.
+
+Las nueve ventajas provienen del Excel actualizado y se mantienen como textos del cliente. Revisar su redacción técnica antes de producción. Las descargas son originales de composición y vistas de revisión; faltan validación de medidas útiles, resolución final de las fotos, sangrado y preparación de imprenta.
+
+Los SVG se generan con `node tools/build-panels.mjs` a partir de `panel-data.js` y `assets/revision/`. Los JPG se exportan de esos SVG. El visor sólo usa archivos estáticos y no necesita ejecutar el generador.
+
+## Conceptos anteriores
 
 | Propuesta | Distribución y elementos |
 | --- | --- |
@@ -23,7 +41,7 @@ Visor web interactivo para presentar seis propuestas del stand **2-D02**, con un
 | Minimalista | Blanco, piso de aspecto madera, listones, recepción a la izquierda y mesa de reunión. |
 | Laboratorio de soluciones | Pedestal con maqueta, pantalla y muestras a la izquierda, banco al fondo y recepción a la derecha. |
 
-Los textos de beneficios se centralizan en `config.js` y siguen la última imagen entregada: instalación en menos de 2 semanas, sin columnas interiores, acero galvanizado de 1,2 mm y ampliaciones según requerimiento. Son mensajes facilitados por el cliente, pendientes de su validación final para impresión.
+Los cuatro textos de los conceptos anteriores se conservan en `config.js` y siguen la primera imagen de beneficios: instalación en menos de 2 semanas, sin columnas interiores, acero galvanizado de 1,2 mm y ampliaciones según requerimiento. Son mensajes facilitados por el cliente, pendientes de su validación final para impresión.
 
 ## Subir a GitHub Pages
 
@@ -64,6 +82,10 @@ Abre `http://localhost:8000`. En algunos equipos el comando es `python3` o `py`.
 | Archivo | Contenido |
 | --- | --- |
 | `config.js` | Textos, descripción de propuestas, colores y rutas de recursos. |
+| `panel-data.js` | Nueve ventajas, aplicaciones y rutas de las composiciones revisadas. |
+| `tools/build-panels.mjs` | Generador reproducible de los cuatro SVG laterales. |
+| `assets/panels/` | Dos distribuciones izquierdas y dos composiciones derechas, en SVG y JPG. |
+| `assets/revision/` | Recursos extraídos del Excel actualizado y recreación del fondo. |
 | `main.js` | Geometría 3D, posiciones de objetos, cámaras y gráficas de los paneles. Las unidades son metros. |
 | `styles.css` | Diseño de la interfaz y adaptación a celulares. |
 | `assets/logo.jpg` | Logo original entregado por Warehouse Solutions. |
@@ -72,7 +94,7 @@ Abre `http://localhost:8000`. En algunos equipos el comando es `python3` o `py`.
 | `assets/stand-original.jpg` | Referencia de la estructura modular entregada. |
 | `assets/vendor/` | Dependencias locales y licencia MIT de Three.js 0.170.0. |
 
-Los paneles se generan como texturas con Canvas a partir de las fotos y textos; no son archivos preparados para impresión. El arco se modela como un marco decorativo plano. Las pantallas de Galería y Laboratorio muestran imágenes fijas; no reproducen un video. Los listones, piso de aspecto madera, banco y pedestal se modelan con volumen. La cubierta del pedestal es una maqueta simplificada. No hay captura de datos, analítica ni conexiones a servicios externos.
+Los paneles de la propuesta ajustada usan los JPG exportados de los originales SVG. En los conceptos anteriores, las texturas se generan con Canvas a partir de fotos y textos. Las gráficas son de revisión y todavía requieren preparación para impresión. El arco se modela como un marco decorativo plano. Las pantallas de Galería y Laboratorio muestran imágenes fijas; no reproducen un video. Los listones, piso de aspecto madera, banco y pedestal se modelan con volumen. La cubierta del pedestal es una maqueta simplificada. No hay captura de datos, analítica ni conexiones a servicios externos.
 
 Las caras exteriores de los laterales se representan atenuadas para poder explorar el interior al girar el modelo. La gráfica interior permanece opaca. El control Laterales permite retirar esas paredes por completo para revisar la distribución.
 
@@ -88,4 +110,4 @@ Three.js y OrbitControls: licencia MIT, incluida en `assets/vendor/THREE-LICENSE
 
 ## Verificación de esta entrega
 
-Comprobado en Chromium con WebGL: seis propuestas, carga desde una subcarpeta, recursos locales sin peticiones externas, enlaces directos, controles de visibilidad, cambios de cámara, giro con mouse, modal de referencia y descarga PNG. Revisado en formatos de escritorio y celular. El mobiliario está dentro de la planta de 3 × 3 m. Despliegue automático en GitHub Pages mediante Actions.
+Comprobado en Chromium con WebGL: siete propuestas, carga desde una subcarpeta, recursos locales sin peticiones externas, enlaces directos, controles de visibilidad, cambios de cámara, giro con mouse, modal de referencia y descarga PNG. Revisado en formatos de escritorio y celular. El mobiliario está dentro de la planta de 3 × 3 m. Se comprueba además la geometría de ambos paneles (244 × 122 cm), su altura, la envolvente de todos los volúmenes, cambios reales de texturas, persistencia de variantes al recargar, descargas y lectura de paneles sin WebGL. Despliegue automático en GitHub Pages mediante Actions.

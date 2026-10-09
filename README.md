@@ -4,51 +4,46 @@ Visor web interactivo para presentar dos versiones de la propuesta ajustada y se
 
 ## Qué incluye
 
-- Dos versiones actuales y seis conceptos históricos, con V2 Con muestras como entrada.
-- Mobiliario y gráficas seleccionables: arrastre sobre el piso, flechas de movimiento, posición exacta en centímetros, altura y giro. El stand fijo conserva sus medidas.
-- Deshacer/rehacer, restablecer una pieza o toda la distribución. Los movimientos permanecen al cambiar las gráficas o alternar propuestas durante la sesión.
-- Vistas guardadas con nombre: distribución, cámara, gráficas y visibilidad. Se almacenan en este navegador; exportación/importación JSON para trasladarlas a otro equipo. No hay cuenta, sincronización remota ni envío de datos.
-- Dos muestras plegadas de **93 cm de ancho × 56 cm de alto**, al fondo derecho y con sus apoyos hacia el interior.
-- Mesón de recepción retirado de V1 y V2. Mesa y sillas desplazadas hacia el sector delantero izquierdo.
-- Gráficas continuas en fondo y laterales. Cada plancha de origen mide **122 × 240 cm**. Juntas visibles con control independiente y un despiece descargable.
-- Fondo definitivo: **solo la imagen que utiliza el modelo Corporativa, con el logo WS incluido en la foto**, `assets/photos/hangar.jpg`. Sin título, subtítulo ni logo adicional.
-- Panel izquierdo con cuadrícula o fila; panel derecho con nueve ventajas y foto tenue de serviteca o galpón en el campo. Vistas JPG y originales SVG ampliables.
-- Cámaras Perspectiva, Frontal, Planta, Interior y Muestras; exportación PNG, pantalla completa y controles de visibilidad.
-- Interfaz para computador y celular; referencias estáticas y lectura de gráficas cuando no hay WebGL.
-- Enlaces directos `?propuesta=muestras` o `ajustada`; `distribucion=cuadricula|fila` y `foto=serviteca|campo` conservan las gráficas seleccionadas.
-
-## Cómo editar y guardar
-
-1. Pulsa **Mover elementos**. Selecciona una pieza en el modelo o en la lista.
-2. Arrástrala sobre el piso; también puedes usar las flechas en pantalla o en el teclado. El paso se elige entre 1, 5 y 10 cm. Mayús + flecha multiplica el paso por cinco.
-3. Ajusta X, altura, fondo o giro con los campos numéricos. X y fondo se miden desde el centro de la planta, positivo hacia la derecha y el frente; altura indica el origen del elemento sobre el nivel del piso. Los desplazamientos se limitan al recinto de 3 × 3 × 2,5 m. No se resuelven automáticamente choques entre piezas.
-4. **Deshacer** / **Rehacer** (Ctrl/Cmd Z / Mayús Z) recorren hasta 50 movimientos por propuesta. **Restablecer pieza** vuelve a su ubicación inicial; **Restablecer** devuelve distribución y cámara iniciales y permite deshacer el cambio de posiciones.
-5. **Guardar vista** conserva distribución, cámara, gráficas y visibilidad con un nombre. **Vistas guardadas → Abrir** la recupera incluso después de recargar. Hasta 20 vistas por navegador. **Exportar vista** descarga un JSON; **Importar vista** lo abre, y puede guardarse luego en el navegador actual.
-6. El botón de descarga del visor guarda una imagen PNG de la cámara actual. Las vistas guardadas son independientes de esos archivos de imagen.
-
-En V1/V2 son editables la mesa, cada silla, las tres composiciones de pared y el expositor completo en V2. Se mueve cada pared como un conjunto para preservar la continuidad de sus tres paños. En los conceptos históricos también se pueden mover gráficas, mesa, sillas, mesón, pantallas, repisas, pedestal, banco y exhibición de producto según la propuesta. Las partes estructurales del recinto permanecen fijas.
+- Versión 2 con muestras como vista inicial; versión 1 con gráficas y seis modelos anteriores: Corporativa, Arco industrial, Galería de proyectos, Cuatro beneficios, Minimalista y Laboratorio de soluciones.
+- Dos muestras de chapa plegada de **93 cm de ancho × 56 cm de alto**, modeladas con volumen en un expositor independiente al frente derecho.
+- Cámara Muestras, control de visibilidad independiente y vista de detalle descargable con enlace a la imagen recibida.
+- Dos paneles laterales de **244 × 122 cm**, con el borde inferior a **80 cm** del piso.
+- Comparación de fotos en cuadrícula 2 × 2 o en fila; foto de apoyo de serviteca o galpón en el campo.
+- Vista plana ampliable de ambos paneles y del fondo, con descargas JPG y originales SVG de los laterales.
+- Giro, zoom y desplazamiento mediante mouse o pantalla táctil.
+- Vistas en perspectiva, frontal, planta e interior.
+- Controles para mostrar mobiliario, laterales, dimensiones y giro automático.
+- Exportación PNG de la vista actual y pantalla completa cuando el navegador lo admite.
+- Render conceptual de referencia para cada alternativa.
+- Logo original y fotografías extraídas del Excel entregado por el cliente.
+- Diseño adaptable a computador, tablet y celular.
+- Enlaces directos mediante `?propuesta=` seguido de `muestras`, `ajustada`, `corporativa`, `arco`, `galeria`, `beneficios`, `minimalista` o `laboratorio`. En las dos versiones ajustadas, `distribucion=cuadricula|fila` y `foto=serviteca|campo` conservan las variantes elegidas.
+- Vista de renders cuando el navegador no puede inicializar los gráficos 3D.
 
 ## Revisión del 9 de octubre de 2026
 
-### Planchas y fondo definitivo
+### Segunda versión con muestras
 
-Se corrige la interpretación anterior de 244 × 122 cm: **122 × 240 cm es el tamaño de la plancha de origen, no el de la gráfica completa**. Se propone un área útil de **290 × 240 cm por pared**, dentro de los 300 cm nominales. Cada pared combina anchos **122 + 122 + 46 cm**. Las tres caras suman **9 paños instalados** y una estimación de **8 planchas de origen**: seis completas y dos para obtener las tres franjas de 46 cm. Confirmar las medidas útiles entre perfiles y las tolerancias antes de producir.
+La indicación «56 × 93 ancho» se interpreta como **56 cm de alto × 93 cm de ancho por muestra**. Las dos piezas siguen la forma de chapa plegada de `assets/revision/muestras-referencia.png`. Ancho y alto se representan a escala; la proyección de **38 cm** y la geometría de los pliegues son aproximaciones de la imagen, pendientes de las medidas reales del perfil.
 
-Cada paño se modela por separado, con UV que continúan la misma imagen. No se repite el dibujo en cada plancha. El control **Juntas** muestra las divisiones reales de la propuesta; **Ver gráficas y despiece** abre las composiciones y el esquema de corte. El despiece corresponde siempre a la distribución inicial, aunque se muevan elementos en el editor.
+El expositor está al frente derecho, dentro de la tarima, y deja aproximadamente 91 cm entre su base y el borde del mesón de recepción. Las piezas se exhiben en dos niveles, con centros a 0,62 y 1,35 m del piso. Se conservan los dos paneles de 244 × 122 cm, el fondo y el mobiliario de la primera versión. El rack se representa como una estructura separada; sus apoyos, uniones y estabilidad se definen con el montajista.
 
-Se conserva la composición del Excel: cuatro usos e imágenes a la izquierda, dibujos AutoCAD agrupados, nueve ventajas con iconos y Nuevos desarrollos a la derecha. La imagen de esquiadores corresponde a Techo contenedor. El fondo ahora usa `assets/photos/hangar.jpg`, exactamente la imagen usada por el modelo Corporativa, que incluye el logo WS. La composición anterior con títulos se conserva únicamente como archivo histórico.
+`sample-display.js` contiene el modelo de las piezas y el expositor. Las imágenes `assets/concepts/muestras.jpg` y `muestras-detalle.jpg` son capturas del modelo 3D, no imágenes generadas con IA. El botón **Muestras** acerca la cámara; en esa vista sólo se muestran las cotas de las piezas para evitar que se superpongan las medidas generales del stand.
 
-### Expositor y montaje
+### Gráficas y bastidor
 
-La indicación «56 × 93 ancho» se interpreta como **56 cm de alto × 93 cm de ancho por muestra**. Las piezas siguen `assets/revision/muestras-referencia.png`. La proyección de **38 cm** y los pliegues son aproximaciones visuales. Las muestras tienen sus centros a **0,62 y 1,35 m** del piso.
+Se aplica el Excel actualizado y la transcripción de las indicaciones de Claudia:
 
-El expositor se coloca en el **fondo derecho**, con bases y apoyos orientados hacia el interior. Se retira el mesón de V1/V2. Las cotas de las muestras acompañan al expositor cuando se mueve. El bastidor independiente, bases, uniones y estabilidad deben definirse con el montajista; el modelo no constituye un diseño estructural.
+- **Izquierda:** una plancha horizontal con las cuatro aplicaciones y una columna de dibujos técnicos originales. La cuadrícula 2 × 2 es la composición inicial. Los títulos y usos quedan fuera de las fotografías.
+- **Derecha:** otra plancha horizontal del mismo tamaño, con las nueve ventajas numeradas en el Excel, ahora con iconos y descripciones. Incluye Gran luz libre y un bloque de Nuevos desarrollos (casas, cabañas, lodge y refugios de montaña). La serviteca es la fotografía de apoyo inicial. Se ofrece una segunda composición con el galpón en el campo.
+- **Fondo:** recreación frontal de la gigantografía del hangar aprobada visualmente, con título y subtítulo conservados. Se representa un área útil provisional de **284 × 212 cm**, dividida en **tres paños verticales**.
+- **Montaje:** bastidor interior independiente en U, soportes y bases ilustrativos, sin adhesivos ni uniones modeladas a las paredes del recinto. El bastidor y la cenefa respetan la envolvente nominal de 3 × 3 × 2,5 m. El montajista debe definir perfiles, uniones y estabilidad; la representación no constituye un diseño estructural ni una autorización del organizador.
 
-`assets/concepts/muestras-v3.jpg`, `muestras-detalle-v3.jpg` y `ajustada-v3.jpg` son capturas de la distribución inicial del modelo 3D. Los seis conceptos anteriores conservan sus renders históricos.
+Decisiones de diseño adoptadas: panel derecho del mismo tamaño que el izquierdo; Nuevos desarrollos dentro de la misma plancha; uso de Serviteca redactado como talleres y servicios automotrices para corresponder con la fotografía. Las fotografías de esquiadores permanecen bajo Techo contenedor, conforme a la indicación de Claudia. Los retoques fotográficos quedan para cuando el cliente entregue las versiones definitivas.
 
-Las nueve ventajas son textos facilitados por el cliente. Revisar su redacción técnica y la calidad de las fotos antes de producir. Las descargas son composiciones de revisión; faltan sangrado y preparación final de imprenta.
+Las nueve ventajas provienen del Excel actualizado y se mantienen como textos del cliente. Revisar su redacción técnica antes de producción. Las descargas son originales de composición y vistas de revisión; faltan validación de medidas útiles, resolución final de las fotos, sangrado y preparación de imprenta.
 
-Los SVG actuales se generan con `node tools/build-wall-panels.mjs` a partir de `panel-data.js`, `wall-layout.js` y las fotos locales. Exportar JPG a 2400 px de ancho desde los SVG. El generador anterior `tools/build-panels.mjs` queda como histórico. El visor sólo necesita los archivos estáticos ya exportados.
+Los SVG se generan con `node tools/build-panels.mjs` a partir de `panel-data.js` y `assets/revision/`. Los JPG se exportan de esos SVG. El visor sólo usa archivos estáticos y no necesita ejecutar el generador.
 
 ## Conceptos anteriores
 
@@ -101,9 +96,7 @@ Abre `http://localhost:8000`. En algunos equipos el comando es `python3` o `py`.
 | `config.js` | Textos, descripción de propuestas, colores y rutas de recursos. |
 | `panel-data.js` | Nueve ventajas, aplicaciones y rutas de las composiciones revisadas. |
 | `sample-display.js` | Geometría de las dos muestras, medidas y expositor independiente. |
-| `wall-layout.js` | Tamaño de las planchas y despiece útil propuesto. |
-| `layout-editor.js` | Selección, arrastre, límites, historial, vistas guardadas e importación/exportación. |
-| `tools/build-wall-panels.mjs` | Generador de las composiciones actuales y del despiece en SVG. |
+| `tools/build-panels.mjs` | Generador reproducible de los cuatro SVG laterales. |
 | `assets/panels/` | Dos distribuciones izquierdas y dos composiciones derechas, en SVG y JPG. |
 | `assets/revision/` | Recursos extraídos del Excel actualizado y recreación del fondo. |
 | `main.js` | Geometría 3D, posiciones de objetos, cámaras y gráficas de los paneles. Las unidades son metros. |
@@ -130,4 +123,4 @@ Three.js y OrbitControls: licencia MIT, incluida en `assets/vendor/THREE-LICENSE
 
 ## Verificación de esta entrega
 
-Comprobado en Chromium con WebGL: ocho propuestas, carga desde una subcarpeta, recursos locales sin peticiones externas, enlaces directos, controles de visibilidad, cambios de cámara, giro con mouse, modal de referencia y descarga PNG. Revisado en formatos de escritorio y celular. El mobiliario está dentro de la planta de 3 × 3 m. Se comprueba además la geometría de los nueve paños (122/46 × 240 cm), la de las dos muestras (93 × 56 cm), la envolvente del expositor, cambios reales de texturas, persistencia de variantes al recargar, descargas y lectura de paneles sin WebGL. También se verifican selección por clic, arrastre con mouse y pantalla táctil, movimiento por centímetros, límites del recinto, giro, deshacer/rehacer, restablecer y conservar cambios al cambiar gráficas o propuestas. Guardado local, recuperación tras recargar, cámara, importación/exportación JSON y rechazo de archivos inválidos comprobados. La cámara Muestras sigue al expositor movido. Despliegue automático en GitHub Pages mediante Actions.
+Comprobado en Chromium con WebGL: ocho propuestas, carga desde una subcarpeta, recursos locales sin peticiones externas, enlaces directos, controles de visibilidad, cambios de cámara, giro con mouse, modal de referencia y descarga PNG. Revisado en formatos de escritorio y celular. El mobiliario está dentro de la planta de 3 × 3 m. Se comprueba además la geometría de ambos paneles (244 × 122 cm), la de las dos muestras (93 × 56 cm), la envolvente del expositor, cambios reales de texturas, persistencia de variantes al recargar, descargas y lectura de paneles sin WebGL. Despliegue automático en GitHub Pages mediante Actions.

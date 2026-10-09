@@ -1,10 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from './assets/vendor/OrbitControls.js';
-import { brand, photos, benefits, proposals } from './config.js?v=2.2';
-import { panelFiles } from './panel-data.js?v=2.2';
-import { createSampleDisplay, sampleSpec, displayPosition, sampleLevels } from './sample-display.js?v=2.2';
-import { wallLayout } from './wall-layout.js?v=2.2';
-import { createLayoutEditor } from './layout-editor.js?v=2.2';
+import { brand, photos, benefits, proposals } from './config.js?v=2.1';
+import { panelFiles } from './panel-data.js?v=2.0';
+import { createSampleDisplay, sampleSpec, displayPosition, sampleLevels } from './sample-display.js?v=2.1';
 
 const $ = (id) => document.getElementById(id);
 const container = $('viewer');
@@ -12,14 +10,13 @@ const NAVY = brand.navy, YELLOW = brand.yellow;
 let scene, camera, renderer, controls, booth, furniture, sides, dimensions, sampleDisplay, sampleDimensions;
 let current = 'muestras', cameraMotion = null, assetImages = {}, ready = false;
 let currentView = 'perspective';
-let editor, editableObjects = [], seamGroups = [], objectCounts = {};
 const isAdjusted = () => current === 'ajustada' || current === 'muestras';
 let cameraScale = 1;
 const query = new URL(location.href).searchParams;
 let panelLayout = query.get('distribucion') === 'fila' ? 'fila' : 'cuadricula';
 let benefitPhoto = query.get('foto') === 'campo' ? 'campo' : 'serviteca';
 let selectedPanel = 'left';
-const resourceNames = { logo: brand.logo, ...photos, ...Object.fromEntries(Object.entries(panelFiles).map(([key,src])=>['panel_'+key,src])), rearAdjusted:'assets/panels/fondo-corporativo.jpg' };
+const resourceNames = { logo: brand.logo, ...photos, ...Object.fromEntries(Object.entries(panelFiles).map(([key,src])=>['panel_'+key,src])), rearAdjusted:'assets/revision/fondo-aprobado.jpg' };
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 function loadImage(src) {
@@ -254,26 +251,13 @@ function tube(parent, a, b, radius, color) {
   m.position.copy(from.clone().add(to).multiplyScalar(.5)); m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), dir.normalize());
   m.castShadow = true; parent.add(m); return m;
 }
-function editable(object, id, name) {
-  object.name=name;object.userData.editorId=id;editableObjects.push({id,name,object});return object;
-}
-function movable(parent,kind,name,x=0,y=0,z=0) {
-  const number=objectCounts[kind]=(objectCounts[kind]||0)+1;
-  const group=new THREE.Group();group.position.set(x,y,z);parent.add(group);
-  return editable(group,kind+'-'+number,name+(kind==='chair'?' '+number:''));
-}
-function centerAssembly(group) {
-  const center=new THREE.Box3().setFromObject(group).getCenter(new THREE.Vector3());center.y=0;
-  group.children.forEach(o=>o.position.sub(center));group.position.add(center);
-}
 function chair(parent, x, z, rotation = 0, color = '#fff') {
-  const g=movable(parent,'chair','Silla',x,.07,z);g.rotation.y=rotation;
+  const g = new THREE.Group(); g.position.set(x, .07, z); g.rotation.y = rotation; parent.add(g);
   cylinder(g, .225, .20, .065, 0, .44, 0, color);
   const back = box(g, .42, .35, .055, 0, .64, -.185, color); back.rotation.x = -.12;
   for (const sx of [-1, 1]) for (const sz of [-1, 1]) tube(g, [sx*.18, .01, sz*.18], [sx*.13, .41, sz*.13], .013, '#b09470');
 }
 function table(parent, x, z) {
-  parent=movable(parent,'table','Mesa',x,0,z);x=0;z=0;
   cylinder(parent, .355, .355, .04, x, .79, z, '#fff');
   cylinder(parent, .029, .029, .70, x, .42, z, '#a5b0ba');
   cylinder(parent, .235, .235, .025, x, .082, z, '#9ca7ae');
@@ -284,8 +268,7 @@ function table(parent, x, z) {
   }
 }
 function counter(parent, right = false) {
-  parent=movable(parent,'counter','Mesón',right?.98:-.98,0,1.10);
-  const x=0,z=0;
+  const x = right ? .98 : -.98, z = 1.10;
   box(parent, .86, .88, .40, x, .51, z, '#f8f9fa');
   box(parent, .91, .035, .45, x, .968, z, '#fff');
   plane(parent, .83, .85, x, .51, z + .205, labelTexture());
@@ -338,34 +321,27 @@ function woodDetails(parent) {
   }
 }
 function wallScreen(parent, sign=1, z=-.32, width=.94, height=.52) {
-  parent=movable(parent,'screen','Pantalla');
   box(parent,.048,height,width,sign*1.414,1.49,z,'#202a33');
   const [c,ctx]=canvas(1200,675,NAVY);cover(ctx,assetImages[sign<0?'contenedor':'serviteca'],0,0,1200,675);
   plane(parent,width-.05,height-.05,sign*1.386,1.49,z,texture(c),sign<0?Math.PI/2:-Math.PI/2);
-  centerAssembly(parent);
 }
 function sampleShelf(parent, sign=1, y=.91, z=-.20, count=2) {
-  parent=movable(parent,'shelf','Repisa de muestras');
   box(parent,.30,.035,.94,sign*1.27,y,z,'#fff');
   box(parent,.044,.09,.86,sign*1.415,y-.06,z,'#f6f7f8');
   for(let i=0;i<count;i++)sample(parent,sign*1.26,y+.023,z+(i-(count-1)/2)*.30,.24,Math.PI/2);
-  centerAssembly(parent);
 }
 function laboratoryFurniture(parent) {
   wallScreen(parent,-1,-.25,1.17,.66);
   sampleShelf(parent,-1,.99,-.25,3);sampleShelf(parent,-1,.61,-.25,2);
-  const pedestal=movable(parent,'pedestal','Pedestal de demostración');
+  const pedestal=new THREE.Group();pedestal.name='Pedestal de demostración';parent.add(pedestal);
   box(pedestal,.95,.83,.70,-.60,.485,.04,NAVY);
   box(pedestal,.956,.075,.706,-.60,.64,.04,YELLOW);
   box(pedestal,1,.04,.75,-.60,.92,.04,'#fff');
   sample(pedestal,-.60,.945,.04,.74);
-  centerAssembly(pedestal);
   // Banco compacto contra el fondo, bajo la gráfica.
-  parent=movable(parent,'bench','Banco');
   box(parent,.84,.32,.42,.82,.265,-1.16,'#f6f7f8');
   box(parent,.86,.105,.44,.82,.477,-1.16,NAVY);
   box(parent,.86,.36,.065,.82,.65,-1.345,NAVY);
-  centerAssembly(parent);
 }
 function disposeGroup(g) {
   if (!g) return;
@@ -395,8 +371,8 @@ function makeDimensions() {
 function makeSampleDimensions() {
   // Agrupadas aparte para ocultarlas junto con el expositor.
   const standDimensions=dimensions;sampleDimensions=new THREE.Group();sampleDimensions.name='Medidas de las muestras';
-  sampleDisplay.add(sampleDimensions);sampleDimensions.userData.helper=true;dimensions=sampleDimensions;
-  const x=0,y=0,z=0,half=sampleSpec.width/2,top=y+sampleLevels[1]+sampleSpec.height/2,bottom=top-sampleSpec.height;
+  booth.add(sampleDimensions);dimensions=sampleDimensions;
+  const {x,y,z}=displayPosition,half=sampleSpec.width/2,top=y+sampleLevels[1]+sampleSpec.height/2,bottom=top-sampleSpec.height;
   line([x-half,top+.055,z+.10],[x+half,top+.055,z+.10]);
   for(const end of [x-half,x+half])line([end,top+.025,z+.10],[end,top+.085,z+.10]);
   dimensionLabel('93 cm',x,top+.065,z+.13);
@@ -406,82 +382,79 @@ function makeSampleDimensions() {
   sampleDimensions.children.filter(o=>o.isSprite).forEach(o=>o.scale.multiplyScalar(.62));
   dimensions=standDimensions;
 }
-function printedWall(side,map) {
-  const {width,height,bottom,widths}=wallLayout;
-  const group=new THREE.Group();group.position.y=bottom+height/2;
-  if(side==='back'){group.position.z=-1.44;booth.add(group);}
-  else {group.position.x=side==='left'?-1.44:1.44;group.rotation.y=side==='left'?Math.PI/2:-Math.PI/2;sides.add(group);}
-  editable(group,'wall-'+side,{left:'Gráfica izquierda',right:'Gráfica derecha',back:'Imagen del fondo'}[side]);
-  group.userData.kind='printed-wall';group.userData.side=side;group.userData.width=width;group.userData.height=height;
-  const seams=new THREE.Group();group.add(seams);seamGroups.push(seams);let offset=0;
-  for(const [index,pieceWidth] of widths.entries()) {
-    const x=-width/2+offset+pieceWidth/2;
-    box(group,pieceWidth,height,.012,x,0,-.008,'#e8edf1',side==='back'?{}:{transparent:true,opacity:.08,depthWrite:false});
-    const face=plane(group,pieceWidth,height,x,0,0,map);
-    face.name=`${group.name} · Paño ${index+1}`;
-    face.userData={kind:'printed-sheet',side,index,width:pieceWidth,height,offset};
-    const uv=face.geometry.attributes.uv;
-    for(let i=0;i<uv.count;i++)uv.setX(i,(offset+uv.getX(i)*pieceWidth)/width);
-    uv.needsUpdate=true;offset+=pieceWidth;
-    if(index<widths.length-1)box(seams,.0025,height,.001,-width/2+offset,0,.001,'#65798b',{transparent:true,opacity:.52});
-  }
-}
 function buildAdjusted() {
   const steel='#67727d';
   const frames=new THREE.Group();frames.name='Bastidor independiente conceptual';booth.add(frames);
+  const panels=new THREE.Group();panels.name='Paneles de PVC';booth.add(panels);
+  // Paredes del recinto: blancas. Las gráficas se soportan en una estructura separada.
   box(booth,3,.07,3,0,.035,0,'#89909a',{roughness:1});
   box(booth,2.94,.008,2.94,0,.074,0,'#b5b9bd',{roughness:1});
   box(booth,2.96,2.15,.028,0,1.155,-1.477,'#f4f5f6');
   for(const sign of [-1,1]) {
     box(sides,.028,2.15,2.94,sign*1.477,1.155,0,'#d5e2ed',{transparent:true,opacity:.07,depthWrite:false});
+    const [plain]=canvas(4,4,'#f7f8f9');plane(sides,2.94,2.14,sign*1.459,1.155,0,texture(plain),sign<0?Math.PI/2:-Math.PI/2);
     for(const z of [-1.48,1.48])box(booth,.04,2.23,.04,sign*1.48,1.185,z,'#aebbc6',{metalness:.7});
     box(sides,.037,.035,2.97,sign*1.48,2.244,0,'#aebbc6',{metalness:.7});
-    // Barras y bases orientadas desde el fondo hacia el interior.
+    for(const z of [-.5,.5])box(sides,.026,2.15,.018,sign*1.446,1.155,z,'#aebbc6',{metalness:.6});
+    // Estructura interior en U, con apoyos dentro de la planta. Se representa sin uniones al recinto.
     for(const z of [-1.39,1.39]) {
-      box(frames,.035,2.4,.035,sign*1.40,1.28,z,steel,{metalness:.65});
-      box(frames,.12,.016,.45,sign*1.40,.087,z-Math.sign(z)*.16,steel,{metalness:.6});
+      box(frames,.04,2.42,.04,sign*1.39,1.29,z,steel,{metalness:.65});
+      box(frames,.46,.016,.13,sign*1.22,.087,z,steel,{metalness:.6});
     }
-    for(const y of [.094,2.46])box(frames,.028,.028,2.80,sign*1.40,y,0,steel,{metalness:.65});
+    box(frames,.036,.036,2.80,sign*1.39,2.228,0,steel,{metalness:.65});
+    for(const z of [-1.16,1.16]) {
+      box(frames,.03,1.96,.03,sign*1.39,1.06,z,steel,{metalness:.65});
+      box(frames,.34,.012,.12,sign*1.245,.085,z,steel,{metalness:.6});
+    }
+    // Ancho 2,44 m y alto 1,22 m exactos. Borde inferior a 0,80 m.
+    const backing=box(panels,.018,1.22,2.44,sign*1.372,1.41,0,'#f4f5f6',{transparent:true,opacity:.12,depthWrite:false});
+    backing.name=sign<0?'Soporte del panel izquierdo':'Soporte del panel derecho';
+    const face=plane(panels,2.44,1.22,sign*1.361,1.41,0,imageTexture(assetImages['panel_'+(sign<0?panelLayout:benefitPhoto)]),sign<0?Math.PI/2:-Math.PI/2);
+    face.name=sign<0?'Panel izquierdo 244 × 122 cm':'Panel derecho 244 × 122 cm';
+    face.userData={kind:'printed-panel',side:sign<0?'left':'right',width:2.44,height:1.22,bottom:.80,variant:sign<0?panelLayout:benefitPhoto};
+    for(const y of [.79,2.04])box(frames,.026,.022,2.47,sign*1.38,y,0,steel,{metalness:.6});
+    for(const z of [-1.234,1.234])box(frames,.026,1.27,.024,sign*1.38,1.415,z,steel,{metalness:.6});
   }
-  printedWall('left',imageTexture(assetImages['panel_'+panelLayout]));
-  printedWall('right',imageTexture(assetImages['panel_'+benefitPhoto]));
-  printedWall('back',imageTexture(assetImages.rearAdjusted));
-  for(const x of [-1.39,0,1.39])box(frames,.03,2.40,.03,x,1.28,-1.462,steel,{metalness:.65});
-  box(frames,2.82,.025,.025,0,2.46,-1.46,steel,{metalness:.65});
-  box(frames,2.82,.025,.025,0,.094,-1.46,steel,{metalness:.65});
+  // Fondo ilustrativo en tres paños verticales. Tamaño útil propuesto, pendiente de medir en recinto.
+  box(panels,2.84,2.12,.016,0,1.15,-1.412,'#f5f5f5');
+  const rear=plane(panels,2.84,2.12,0,1.15,-1.402,imageTexture(assetImages.rearAdjusted));
+  rear.name='Gigantografía de fondo';rear.userData={kind:'backdrop',width:2.84,height:2.12,sections:3};
+  for(const x of [-2.84/6,2.84/6])box(panels,.003,2.12,.002,x,1.15,-1.400,'#9aabba',{transparent:true,opacity:.42});
+  for(const x of [-1.39,0,1.39])box(frames,.035,2.12,.035,x,1.15,-1.432,steel,{metalness:.65});
+  box(frames,2.82,.035,.035,0,2.228,-1.42,steel,{metalness:.65});
+  box(frames,2.82,.035,.035,0,.085,-1.42,steel,{metalness:.65});
+  // Cenefa en el pórtico independiente, dentro de los 2,5 m totales.
   box(frames,2.82,.254,.030,0,2.373,1.397,NAVY);
   plane(frames,2.82,.254,0,2.373,1.414,fasciaTexture());
   for(const x of [-.95,0,.95]) {
     cylinder(frames,.02,.02,.11,x,2.17,1.31,steel);
     const lamp=cylinder(frames,.04,.04,.14,x,2.10,1.28,'#fff');lamp.rotation.x=-.40;
   }
-  table(furniture,-.48,.25);chair(furniture,-1.01,.22,Math.PI/2);chair(furniture,.05,.22,-Math.PI/2);
+  counter(furniture);
+  table(furniture,.39,-.65);chair(furniture,-.08,-.62,Math.PI/2);chair(furniture,.87,-.62,-Math.PI/2);
   makeDimensions();
   if(current==='muestras'){
-    sampleDisplay=createSampleDisplay({navy:NAVY,accent:YELLOW});booth.add(sampleDisplay);
-    editable(sampleDisplay,'samples','Expositor con las 2 muestras');makeSampleDimensions();
+    sampleDisplay=createSampleDisplay({navy:NAVY,accent:YELLOW});booth.add(sampleDisplay);makeSampleDimensions();
   }
   syncVisibility();
 }
-
 function build() {
-  editor?.beforeBuild();editableObjects=[];seamGroups=[];objectCounts={};
   disposeGroup(booth);booth = new THREE.Group();scene.add(booth);
   sampleDisplay=null;sampleDimensions=null;
   sides = new THREE.Group();booth.add(sides);
   furniture = new THREE.Group();booth.add(furniture);
-  if(isAdjusted()){buildAdjusted();editor?.setObjects(current,editableObjects);return;}
+  if(isAdjusted()){buildAdjusted();return;}
   // La envolvente completa incluyendo la tarima y cenefa mide 3 × 3 × 2,5 m.
   box(booth,3,.07,3,0,.035,0,'#89909a',{roughness:1});
   box(booth,2.94,.008,2.94,0,.074,0,'#b3b8bd',{roughness:1});
   if(current==='minimalista')woodDetails(booth);
   box(booth,2.96,2.15,.028,0,1.155,-1.477,'#f4f5f6');
-  editable(plane(booth,2.94,2.14,0,1.155,-1.459,graphic('back')),'wall-back','Gráfica del fondo');
+  plane(booth,2.94,2.14,0,1.155,-1.459,graphic('back'));
   for (const sign of [-1,1]) {
     // Cara externa tenue: permite ver el interior al orbitar por fuera del stand.
     // La gráfica interior conserva su opacidad y sólo se muestra desde su lado frontal.
     box(sides,.028,2.15,2.94,sign*1.477,1.155,0,'#d5e2ed',{transparent:true,opacity:.07,depthWrite:false});
-    editable(plane(sides,2.94,2.14,sign*1.459,1.155,0,graphic(sign<0?'left':'right'),sign<0?Math.PI/2:-Math.PI/2),'wall-'+(sign<0?'left':'right'),sign<0?'Gráfica izquierda':'Gráfica derecha');
+    plane(sides,2.94,2.14,sign*1.459,1.155,0,graphic(sign<0?'left':'right'),sign<0?Math.PI/2:-Math.PI/2);
     box(booth,.04,2.23,.04,sign*1.48,1.185,1.48,'#aebbc6',{metalness:.7});
     box(booth,.04,2.23,.04,sign*1.48,1.185,-1.48,'#aebbc6',{metalness:.7});
     box(sides,.037,.035,2.97,sign*1.48,2.244,0,'#aebbc6',{metalness:.7});
@@ -522,18 +495,14 @@ function build() {
       sample(furniture,1.26,.93,-.42,.24,Math.PI/2);sample(furniture,1.26,.93,-.05,.24,Math.PI/2);
     }
   }
-  const remaining=furniture.children.filter(o=>!o.userData.editorId);
-  if(remaining.length){const group=movable(furniture,'product','Exhibición de producto');remaining.forEach(o=>group.add(o));centerAssembly(group);}
-  makeDimensions();syncVisibility();editor?.setObjects(current,editableObjects);
+  makeDimensions();syncVisibility();
 }
 function syncVisibility() {
   if(!ready && !booth)return;
   furniture.visible=$('furniture').checked;sides.visible=$('walls').checked;dimensions.visible=$('dimensions').checked&&currentView!=='samples';
   if(sampleDisplay)sampleDisplay.visible=$('samples').checked;
   if(sampleDimensions)sampleDimensions.visible=$('samples').checked&&$('dimensions').checked;
-  seamGroups.forEach(g=>g.visible=$('seams').checked);
   if(controls)controls.autoRotate=$('rotate').checked;
-  editor?.refresh();
 }
 function setProposal(id, updateUrl = true) {
   if(!proposals[id])return;const previous=current;current=id;
@@ -542,7 +511,7 @@ function setProposal(id, updateUrl = true) {
   $('tags').replaceChildren(...proposals[id].tags.map(t=>{const s=document.createElement('span');s.textContent=t;return s;}));
   $('thumbnail').src=proposals[id].render;$('thumbnail').alt=`Vista de referencia: ${proposals[id].title}`;
   $('fallback-image').src=proposals[id].render;$('fallback-image').alt=`Propuesta ${proposals[id].title} del stand`;
-  $('revision-controls').hidden=!isAdjusted();$('seams-control').hidden=!isAdjusted();
+  $('revision-controls').hidden=!isAdjusted();
   $('samples-control').hidden=id!=='muestras';$('samples-camera').hidden=id!=='muestras';$('samples-tab').hidden=id!=='muestras';
   if(id!=='muestras'&&selectedPanel==='samples')selectedPanel='left';
   if(!isAdjusted())$('previous-proposals').open=true;
@@ -552,21 +521,20 @@ function setProposal(id, updateUrl = true) {
 }
 function writeUrl(){const url=new URL(location.href);url.searchParams.set('propuesta',current);if(isAdjusted()){url.searchParams.set('distribucion',panelLayout);url.searchParams.set('foto',benefitPhoto);}else{url.searchParams.delete('distribucion');url.searchParams.delete('foto');}history.replaceState({},'',url);}
 function panelDetails() {
-  if(selectedPanel==='assembly')return {title:'Despiece de las planchas',src:'assets/panels/despiece-planchas.jpg',size:'Origen: 122 × 240 cm · 9 paños · 8 planchas estimadas'};
-  if(selectedPanel==='samples')return {title:'Dos muestras · Expositor independiente',src:'assets/concepts/muestras-detalle-v3.jpg',size:'Cada muestra: 93 cm ancho × 56 cm alto'};
-  if(selectedPanel==='left')return {title:'Panel izquierdo · '+(panelLayout==='cuadricula'?'Cuadrícula 2 × 2':'Cuatro fotos en fila'),src:panelFiles[panelLayout],size:'Gráfica total: 290 × 240 cm · 3 paños'};
-  if(selectedPanel==='right')return {title:'Panel derecho · '+(benefitPhoto==='serviteca'?'Serviteca':'Galpón en el campo'),src:panelFiles[benefitPhoto],size:'Gráfica total: 290 × 240 cm · 3 paños'};
-  return {title:'Fondo final · Imagen Corporativa con logo WS',src:resourceNames.rearAdjusted,size:'Gráfica total: 290 × 240 cm · 122 + 122 + 46 cm'};
+  if(selectedPanel==='samples')return {title:'Dos muestras · Expositor independiente',src:'assets/concepts/muestras-detalle.jpg',size:'Cada muestra: 93 cm ancho × 56 cm alto'};
+  if(selectedPanel==='left')return {title:'Panel izquierdo · '+(panelLayout==='cuadricula'?'Cuadrícula 2 × 2':'Cuatro fotos en fila'),src:panelFiles[panelLayout],size:'244 × 122 cm · horizontal'};
+  if(selectedPanel==='right')return {title:'Panel derecho · '+(benefitPhoto==='serviteca'?'Serviteca':'Galpón en el campo'),src:panelFiles[benefitPhoto],size:'244 × 122 cm · horizontal'};
+  return {title:'Gigantografía de fondo',src:resourceNames.rearAdjusted,size:'Fondo propuesto: 284 × 212 cm · 3 paños verticales'};
 }
 function syncPanelUI() {
   $('panel-layout').value=panelLayout;$('modal-layout').value=panelLayout;
   $('benefit-photo').value=benefitPhoto;$('modal-photo').value=benefitPhoto;
   const info=panelDetails();$('panel-title').textContent=info.title;$('panel-image').src=info.src;$('panel-image').alt=info.title;$('panel-size').textContent=info.size;
-  $('panel-download').href=info.src;$('panel-original').href=info.src.replace('.jpg','.svg');$('panel-original').hidden=selectedPanel==='samples';
+  $('panel-download').href=info.src;$('panel-original').href=info.src.replace('.jpg','.svg');$('panel-original').hidden=!['left','right'].includes(selectedPanel);
   $('sample-reference').hidden=selectedPanel!=='samples';
   $('modal-layout').parentElement.hidden=selectedPanel!=='left';$('modal-photo').parentElement.hidden=selectedPanel!=='right';
-  $('panel-image-wrap').classList.toggle('back-panel',['back','samples','assembly'].includes(selectedPanel));
-  $('panel-note').textContent=selectedPanel==='samples'?'56 × 93 interpretados como 56 cm de alto × 93 cm de ancho. Profundidad y pliegues aproximados según la referencia; apoyos por definir con el montajista.':selectedPanel==='back'?'Solo la imagen de la versión Corporativa con su logo WS. Área útil propuesta: 290 × 240 cm; medidas y cortes por confirmar.':'Planchas de 122 × 240 cm, unidas para una gráfica continua. Área útil provisional de 290 × 240 cm por pared; confirmar cortes, holguras y preparación de imprenta.';
+  $('panel-image-wrap').classList.toggle('back-panel',['back','samples'].includes(selectedPanel));
+  $('panel-note').textContent=selectedPanel==='samples'?'56 × 93 interpretados como 56 cm de alto × 93 cm de ancho. Profundidad y pliegues aproximados según la referencia; apoyos por definir con el montajista.':selectedPanel==='back'?'Recreación frontal del fondo aprobado. Despiece y medidas útiles por confirmar antes de imprimir.':'Gráfica de revisión. Las fotos conservan la calidad del material recibido. Preparación final para impresión pendiente.';
   document.querySelectorAll('[data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===selectedPanel)));
 }
 function changePanels(kind,value) {
@@ -579,14 +547,13 @@ const presets = {
   front:{position:[0,1.7,7.8],target:[0,1.12,0],name:'Frontal'},
   top:{position:[0,8,.001],target:[0,.05,0],name:'Planta'},
   inside:{position:[0,1.65,3.6],target:[0,1.2,-1.3],name:'Interior'},
-  samples:{position:[-.30,1.95,1.65],target:[.80,1.03,-1.12],name:'Muestras'},
+  samples:{position:[-.88,2.22,3.90],target:[.90,1.03,1.06],name:'Muestras'},
 };
 function setView(id, animate=true) {
   if(!ready)return;
   let p=presets[id];if(!p)return;
-  cameraMotion=null;currentView=id;
+  currentView=id;
   if(isAdjusted()&&id==='perspective')p={...p,position:[.72,2.32,6.3],target:[0,1.15,0]};
-  if(id==='samples'&&sampleDisplay){const target=sampleDisplay.localToWorld(new THREE.Vector3(0,.95,.2));const position=sampleDisplay.localToWorld(new THREE.Vector3(-1.1,1.87,2.97));p={...p,target:target.toArray(),position:position.toArray()};}
   if(id==='samples')$('samples').checked=true;
   syncVisibility();
   const target=new THREE.Vector3(...p.target);
@@ -600,7 +567,7 @@ function resize(){const w=container.clientWidth,h=container.clientHeight;rendere
 function animate(now) {
   requestAnimationFrame(animate);
   if(cameraMotion){const t=Math.min((now-cameraMotion.start)/650,1),e=1-Math.pow(1-t,3);camera.position.lerpVectors(cameraMotion.from,cameraMotion.to,e);controls.target.lerpVectors(cameraMotion.fromTarget,cameraMotion.toTarget,e);if(t===1)cameraMotion=null;}
-  controls.update();editor?.update();renderer.render(scene,camera);
+  controls.update();renderer.render(scene,camera);
 }
 function bindUI() {
   ['panel-layout','modal-layout'].forEach(id=>$(id).addEventListener('change',e=>changePanels('layout',e.target.value)));
@@ -612,12 +579,12 @@ function bindUI() {
   $('panels-modal').addEventListener('click',e=>{if(e.target===$('panels-modal')){const r=e.target.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close();}});
   document.querySelectorAll('[data-proposal]').forEach(b=>b.addEventListener('click',()=>setProposal(b.dataset.proposal)));
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
-  ['furniture','walls','dimensions','rotate','samples','seams'].forEach(id=>$(id).addEventListener('change',syncVisibility));
+  ['furniture','walls','dimensions','rotate','samples'].forEach(id=>$(id).addEventListener('change',syncVisibility));
   $('reset').addEventListener('click',()=>setView('perspective'));
   $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(container.requestFullscreen)await container.requestFullscreen();else throw new Error('unavailable');}catch{toast('Tu navegador no permite pantalla completa.');}});
   $('capture').addEventListener('click',()=>{
     if(!ready)return;
-    editor.withoutSelection(()=>{renderer.render(scene,camera);renderer.domElement.toBlob(blob=>{if(!blob)return;const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=`Warehouse-${current}-2-D02.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);},'image/png');});
+    renderer.render(scene,camera);renderer.domElement.toBlob(blob=>{if(!blob)return;const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=`Warehouse-${current}-2-D02.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);},'image/png');
   });
   const dialog=$('reference-modal');
   const showReference=()=>{$('modal-title').textContent=proposals[current].title;$('reference-image').src=proposals[current].render;$('reference-caption').textContent=proposals[current].referenceCaption||'Render ilustrativo de la composición base. Las variantes se revisan en el modelo 3D y en «Ver paneles en detalle». El mobiliario y el bastidor son una propuesta.';dialog.showModal();};
@@ -641,17 +608,10 @@ async function init() {
     const fill=new THREE.DirectionalLight('#dae9ff',1.1);fill.position.set(4,3,-2);scene.add(fill);
     const ground=new THREE.Mesh(new THREE.PlaneGeometry(200,200),new THREE.ShadowMaterial({opacity:.15}));ground.rotation.x=-Math.PI/2;ground.position.y=-.002;ground.receiveShadow=true;scene.add(ground);
     const entries=await Promise.all(Object.entries(resourceNames).map(async([key,src])=>[key,await loadImage(src)]));assetImages=Object.fromEntries(entries);
-    editor=createLayoutEditor({THREE,scene,camera,controls,canvas:renderer.domElement,toast,
-      stopCamera:()=>{cameraMotion=null;$('rotate').checked=false;controls.autoRotate=false;},
-      resetCamera:()=>setView('perspective',false),
-      getContext:()=>({proposal:current,panelLayout,benefitPhoto,view:currentView,visibility:Object.fromEntries(['furniture','walls','dimensions','samples','seams'].map(id=>[id,$(id).checked])),cameraScale}),
-      restoreContext:(data)=>{panelLayout=data.panelLayout;benefitPhoto=data.benefitPhoto;setProposal(data.proposal);Object.entries(data.visibility).forEach(([id,value])=>$(id).checked=value);currentView=data.view==='samples'?'samples':'saved';syncVisibility();},
-      freeCamera:()=>{cameraMotion=null;$('view-name').textContent='Vista guardada';document.querySelectorAll('[data-view]').forEach(b=>b.classList.remove('active'));},
-    });
     ready=true;build();setView('perspective',false);resize();new ResizeObserver(resize).observe(container);$('loading').hidden=true;requestAnimationFrame(animate);
     // Estado legible para comprobaciones del visor y futuras integraciones.
-    window.standViewer={get proposal(){return current;},get dimensions(){return {width:3,depth:3,height:2.5};},get panelOptions(){return {layout:panelLayout,photo:benefitPhoto};},get wallLayout(){return wallLayout;},get editor(){return editor;},get controls(){return controls;},get sampleSpec(){return {...sampleSpec};},get sampleDisplay(){return sampleDisplay;},get scene(){return scene;},get renderer(){return renderer;},get camera(){return camera;},get booth(){return booth;},get furniture(){return furniture;},get sides(){return sides;},setProposal,setView};
-  }catch(err){console.error(err);$('loading').hidden=true;$('error').hidden=false;container.classList.add('no-webgl');['furniture','walls','dimensions','rotate','samples','seams'].forEach(id=>$(id).disabled=true);if(booth){ready=false;disposeGroup(booth);}}
+    window.standViewer={get proposal(){return current;},get dimensions(){return {width:3,depth:3,height:2.5};},get panelOptions(){return {layout:panelLayout,photo:benefitPhoto};},get sampleSpec(){return {...sampleSpec};},get sampleDisplay(){return sampleDisplay;},get scene(){return scene;},get renderer(){return renderer;},get camera(){return camera;},get booth(){return booth;},get furniture(){return furniture;},get sides(){return sides;},setProposal,setView};
+  }catch(err){console.error(err);$('loading').hidden=true;$('error').hidden=false;container.classList.add('no-webgl');['furniture','walls','dimensions','rotate','samples'].forEach(id=>$(id).disabled=true);if(booth){ready=false;disposeGroup(booth);}}
 }
 const initial=new URL(location.href).searchParams.get('propuesta');
 setProposal(proposals[initial]?initial:'muestras',false);bindUI();

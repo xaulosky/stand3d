@@ -17,16 +17,15 @@ export const benefits = [
 ];
 export const proposals = {
   muestras: {
-    title: 'Versión 2 · Con muestras', description: 'Dos muestras de 93 × 56 cm en el fondo derecho, con apoyos hacia el interior y acceso despejado. Gráficas continuas sobre planchas de 122 × 240 cm. El fondo utiliza solo la imagen de Corporativa con su logo WS.',
-    tags: ['Planchas 122 × 240 cm', 'Muestras al fondo', 'Elementos editables'],
-    render: 'assets/concepts/muestras-v3.jpg',
+    title: 'Versión 2 · Con muestras', description: 'Dos muestras de chapa plegada, de 93 cm de ancho × 56 cm de alto cada una, en un expositor independiente de dos niveles al frente derecho. El acceso queda al centro. Conserva los paneles laterales, las nueve ventajas y el fondo de la propuesta ajustada.',
+    tags: ['2 muestras · 93 × 56 cm', 'Expositor independiente', 'Acceso central'],
+    render: 'assets/concepts/muestras.jpg',
     referenceCaption: 'Vista del modelo 3D con las dos muestras. Ancho y alto a escala; profundidad, pliegues y soportes aproximados a partir de la imagen recibida. Las variantes gráficas se revisan en el visor.',
   },
   ajustada: {
-    title: 'Versión 1 · Gráficas', description: 'Planchas de 122 × 240 cm unidas para cubrir fondo y laterales. Aplicaciones y dibujos técnicos a la izquierda; nueve ventajas y nuevos desarrollos a la derecha. Fondo Corporativa con su logo WS y espacio de conversación abierto.',
-    tags: ['Planchas 122 × 240 cm', 'Imagen continua', 'Elementos editables'],
-    render: 'assets/concepts/ajustada-v3.jpg',
-    referenceCaption: 'Captura de la distribución inicial del modelo 3D. Área útil propuesta: 290 × 240 cm por pared; medidas de instalación por confirmar.',
+    title: 'Propuesta ajustada', description: 'Dos paneles horizontales de 244 × 122 cm: aplicaciones y dibujos técnicos a la izquierda; nueve ventajas y nuevos desarrollos a la derecha. El fondo conserva la bodega curva. Bastidor independiente como propuesta de montaje.',
+    tags: ['Paneles 244 × 122 cm', 'Nueve ventajas', 'Bastidor independiente'],
+    render: 'assets/concepts/ajustada.jpg',
   },
   corporativa: {
     title: 'Corporativa', description: 'La marca y una gran imagen de hangar reciben al visitante. Las soluciones y sus beneficios se distribuyen en los laterales, dejando espacio para conversar.',

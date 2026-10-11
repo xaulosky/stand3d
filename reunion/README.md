@@ -14,6 +14,8 @@ Fondo con la imagen de la propuesta Corporativa, retocada con iluminación natur
 
 Panel izquierdo en cuadrícula. Se conserva el orden de las cuatro aplicaciones; el uso de Techo Serviteca cambia a “Centros de logística y distribución”. Los dos dibujos técnicos comparten el título “Geometría de la cubierta”. Se elimina el subtítulo “Aplicaciones y espacios de uso”. Nueve ventajas con textos abreviados; el plazo de montaje se corrige a “Menor a 3 semanas”, sujeto a revisión comercial antes de imprimir.
 
+Panel derecho: las ventajas ocupan la zona izquierda y “Nuevos desarrollos”, con las imágenes de cabaña y lodge, ocupa el extremo derecho de la plancha, hacia el acceso y el pasillo del stand.
+
 ## Supuestos visibles en el visor
 
 - Se puede comparar plancha 122 × 240 cm y 122 × 244 cm: ambas medidas se mencionaron. Por defecto se mantiene el largo de 240 cm indicado por escrito. Fondo compuesto: 240/244 cm de ancho × 244 cm de alto, con junta horizontal a la mitad. Comprobar altura útil y fijación con el recinto.

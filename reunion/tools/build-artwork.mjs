@@ -51,14 +51,16 @@ const icons={
 };
 function icon(k,x,y){return `<g transform="translate(${x} ${y}) scale(.78)" fill="none" color="${Y}" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">${icons[k]}</g>`;}
 function right(){let b=rect(0,0,2400,1220,N)+photo('logo',55,30,300,160,'xMidYMid meet')+text('VENTAJAS COMPETITIVAS',423,102,57,W,700)+text('ESPACIOS LIBRES · FABRICACIÓN A MEDIDA',427,160,28,Y)+rect(55,211,2290,4,'#4c6c85');
- b+=text('NUEVOS DESARROLLOS',57,287,35,W,700)+text('Casas · Cabañas · Lodge',57,336,27,M);
- b+=photo('cabana',57,379,562,268)+rect(57,647,562,5,Y)+text('CABAÑA · PROPUESTA CONCEPTUAL',57,677,21,M,500);
- b+=photo('lodge',57,700,562,269)+rect(57,969,562,5,Y)+text('LODGE · PROPUESTA CONCEPTUAL',57,999,21,M,500);
- b+=text('Nuevas formas de habitar',57,1055,29,W)+rect(668,261,2,830,'#4c6c85');
- benefits.forEach((a,i)=>{const x=725+(i%3)*544,y=284+Math.floor(i/3)*259;
+ // En el costado derecho, el borde derecho del arte queda hacia el acceso.
+ const developmentX=1783;
+ b+=text('NUEVOS DESARROLLOS',developmentX,287,35,W,700)+text('Casas · Cabañas · Lodge',developmentX,336,27,M);
+ b+=photo('cabana',developmentX,379,562,268)+rect(developmentX,647,562,5,Y)+text('CABAÑA · PROPUESTA CONCEPTUAL',developmentX,677,21,M,500);
+ b+=photo('lodge',developmentX,700,562,269)+rect(developmentX,969,562,5,Y)+text('LODGE · PROPUESTA CONCEPTUAL',developmentX,999,21,M,500);
+ b+=text('Nuevas formas de habitar',developmentX,1055,29,W)+rect(1733,261,2,830,'#4c6c85');
+ benefits.forEach((a,i)=>{const x=75+(i%3)*544,y=284+Math.floor(i/3)*259;
   b+=icon(a.icon,x,y)+lines(a.title,x,y+129,30,W,700)+lines(a.detail,x,y+208,25,M);
  });
- b+=photo('campo',704,1093,1640,86)+rect(704,1093,1640,86,'#143858b3')+text('SIN COLUMNAS INTERIORES · SOLUCIONES PARA TU PROYECTO',750,1150,29,W,600);
+ b+=photo('campo',54,1093,1640,86)+rect(54,1093,1640,86,'#143858b3')+text('SIN COLUMNAS INTERIORES · SOLUCIONES PARA TU PROYECTO',100,1150,29,W,600);
  return svg(b,2400,1220,'Nueve ventajas y nuevos desarrollos · una plancha horizontal');
 }
 function rear(){let b=rect(0,0,2400,2440,N)+photo('corporativa',18,359,2364,2063)+rect(18,18,2364,341,N)+text('FÁBRICA DE TECHOS',1200,132,94,W,700,'middle')+text('Y BODEGAS AUTOPORTANTES',1200,258,91,W,700,'middle')+rect(100,326,2200,8,Y);return svg(b,2400,2440,'Fondo corporativo · dos planchas horizontales');}

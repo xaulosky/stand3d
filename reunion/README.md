@@ -21,7 +21,7 @@ Panel derecho: las ventajas ocupan la zona izquierda y “Nuevos desarrollos”,
 - Se puede comparar plancha 122 × 240 cm y 122 × 244 cm: ambas medidas se mencionaron. Por defecto se mantiene el largo de 240 cm indicado por escrito. Fondo compuesto: 240/244 cm de ancho × 244 cm de alto, con junta horizontal a la mitad. Comprobar altura útil y fijación con el recinto.
 - Las muestras tienen 150 cm de largo de trabajo; también se discutió acortarlas. Ancho de 60 cm, perfil, ligera curvatura, corrugado, inclinación y soportes son ilustrativos.
 - Mesa de referencia: 105 × 52 cm. Confirmar la mesa disponible, sillas y soporte móvil de TV. La pantalla permite comparar orientación horizontal y vertical.
-- El hangar y la cubierta ya incorporan los retoques. Cabaña y lodge son propuestas conceptuales generadas, no fotografías de obras ejecutadas. Revisar las imágenes y la resolución final antes de imprimir. La pantalla usa el fondo corporativo retocado en una composición estática de referencia; no contiene el video de proyectos solicitado en la reunión.
+- El hangar y la cubierta ya incorporan los retoques. Cabaña y lodge son propuestas conceptuales generadas, no fotografías de obras ejecutadas. Revisar las imágenes y la resolución final antes de imprimir.
 - Resolver el montaje permitido sin pegar ni perforar el recinto. El visor no calcula estructuras ni fijaciones.
 
 ## Archivos
@@ -38,6 +38,16 @@ Las cinco imágenes se generaron con la herramienta integrada ImageGen. Las refe
 - [Cabaña conceptual](assets/imagenes/desarrollo-cabana.jpg): un volumen de cubierta curva, madera y vidrio.
 - [Lodge conceptual](assets/imagenes/desarrollo-lodge.jpg): tres volúmenes curvos conectados en un entorno de montaña.
 
-[Prompts y referencias de generación](assets/imagenes/prompts.json). Las gráficas, la pantalla y las doce vistas de V3, V4 y V5 incorporan esta revisión.
+[Prompts y referencias de generación](assets/imagenes/prompts.json). Las gráficas y las doce vistas de V3, V4 y V5 incorporan esta revisión.
 
 El visor usa Three.js y OrbitControls ya presentes en `../assets/vendor/`; no necesita compilación ni dependencias de red. Se publica junto con el sitio mediante el flujo existente de GitHub Pages. Para editar las gráficas, ejecutar `node reunion/tools/build-artwork.mjs` desde la raíz con `sharp` instalado. Este generador sólo escribe en `reunion/assets/`.
+
+## Video en la TV del modelo
+
+La pantalla de V3, V4 y V5 reproduce el video de aplicaciones 3D de Warehouse Solutions automáticamente, en bucle y sin audio. Dura 60 segundos y muestra bodega, techo sobre contenedores, taller, cancha cubierta, cabaña y lodge; son representaciones conceptuales. El botón «Pausar video TV» permite detenerlo y reanudarlo. Si el navegador bloquea el inicio automático, aparece «Reproducir video TV».
+
+El archivo `assets/video/ws-aplicaciones-3d.mp4` es una copia optimizada para el visor: H.264, 1280 × 720, 30 fps, sin audio y con inicio progresivo. El máster Full HD se conserva por separado. Una sola textura de video mantiene la reproducción al cambiar de propuesta, orientación o formato de plancha; el encuadre 16:9 se conserva mediante bandas negras. La imagen `assets/video/poster.jpg` se muestra durante la carga o si el video no está disponible.
+
+El movimiento dentro de la TV requiere WebGL. Si no está disponible, el visor conserva las doce imágenes de referencia del stand, con un fotograma del video.
+
+![Video de aplicaciones dentro de la TV del stand](assets/video/vista-tv-en-stand.jpg)

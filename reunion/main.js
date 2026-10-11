@@ -3,12 +3,13 @@ import {OrbitControls} from '../assets/vendor/OrbitControls.js';
 import {proposals,dimensions as spec} from './config.js';
 
 const $=id=>document.getElementById(id), N='#143858', Y='#ecab00';
-const ART_REV='3',asset=file=>`assets/${file}?v=${ART_REV}`;
+const ART_REV='4',asset=file=>`assets/${file}?v=${ART_REV}`;
 const viewer=$('viewer'), query=new URL(location.href).searchParams;
 let current=proposals[query.get('propuesta')]?query.get('propuesta'):'laterales';
 let sheet=query.get('plancha')==='244'?2.44:2.40, orientation=query.get('pantalla')==='vertical'?'portrait':'landscape';
 let scene,camera,renderer,controls,booth,samples,furniture,sides,measurements,planLabels;
 let ready=false,currentView='perspective',motion=null,selectedPanel='izquierdo';
+let tvVideo,tvTexture,tvPoster,tvScreen,wantsTVPlaying=true;
 const images={},reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const panelTitles={izquierdo:'Aplicaciones y geometría',derecho:'Ventajas y nuevos desarrollos',fondo:'Fondo corporativo',cenefa:'Cenefa de identificación'};
 
@@ -22,7 +23,7 @@ function box(parent,w,h,d,x,y,z,color='#fff',options={}){const m=new THREE.Mesh(
 function cylinder(parent,r,h,x,y,z,color='#667885'){const m=new THREE.Mesh(new THREE.CylinderGeometry(r,r,h,20),material(color,{metalness:.5,roughness:.5}));m.position.set(x,y,z);m.castShadow=true;parent.add(m);return m;}
 function tube(parent,a,b,r=.012,color='#667885'){const start=new THREE.Vector3(...a),end=new THREE.Vector3(...b),dir=end.clone().sub(start);const m=cylinder(parent,r,dir.length(),0,0,0,color);m.position.copy(start.add(end).multiplyScalar(.5));m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),dir.normalize());return m;}
 function plane(parent,w,h,x,y,z,map,rotation=0){const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h),new THREE.MeshBasicMaterial({map,side:THREE.FrontSide,toneMapped:false}));m.position.set(x,y,z);m.rotation.y=rotation;parent.add(m);return m;}
-function dispose(g){if(!g)return;const geos=new Set(),mats=new Set(),maps=new Set();g.traverse(o=>{if(o.geometry)geos.add(o.geometry);if(o.material)for(const m of [o.material].flat()){mats.add(m);if(m.map)maps.add(m.map);}});geos.forEach(g=>g.dispose());maps.forEach(m=>m.dispose());mats.forEach(m=>m.dispose());g.removeFromParent();}
+function dispose(g){if(!g)return;const geos=new Set(),mats=new Set(),maps=new Set();g.traverse(o=>{if(o.geometry)geos.add(o.geometry);if(o.material)for(const m of [o.material].flat()){mats.add(m);if(m.map&&m.map!==tvTexture&&m.map!==tvPoster)maps.add(m.map);}});geos.forEach(g=>g.dispose());maps.forEach(m=>m.dispose());mats.forEach(m=>m.dispose());g.removeFromParent();}
 
 function shell(){
   box(booth,3,.04,3,0,.02,0,'#83909a',{roughness:.95});
@@ -121,9 +122,30 @@ function chair(p){const g=group(furniture,'Silla');g.position.set(p.x,.047,p.z);
   box(g,.40,.055,.39,0,.43,0,'#e5e9eb');const back=box(g,.40,.32,.035,0,.625,-.175,'#e5e9eb');back.rotation.x=-.1;
   for(const x of [-.16,.16])for(const z of [-.15,.15])tube(g,[x*1.12,0,z*1.12],[x,.408,z],.01,'#8a969e');
 }
-function screenTexture(){const portrait=orientation==='portrait',[c,ctx]=canvas(portrait?800:1280,portrait?1280:720);const w=c.width,h=c.height;
-  cover(ctx,images.corporativa,0,0,w,h);const grad=ctx.createLinearGradient(0,h*.25,0,h);grad.addColorStop(0,'#14385800');grad.addColorStop(1,'#143858f5');ctx.fillStyle=grad;ctx.fillRect(0,0,w,h);
-  text(ctx,'FABRICAMOS',w*.08,h*.69,portrait?60:64);text(ctx,'TU PRÓXIMO ESPACIO',w*.08,h*.79,portrait?48:62);text(ctx,'PROYECTOS · PROCESO · APLICACIONES',w*.08,h*.90,portrait?24:27,'#ecab00',500);return tex(c);
+function updateTVControl(){
+  const b=$('tv-play');b.disabled=!tvVideo;
+  b.textContent=tvVideo?.error?'Reintentar video TV':tvVideo?.paused?'Reproducir video TV':'Pausar video TV';
+  b.title=tvVideo?.error?'No se pudo cargar el video. Pulsa para reintentar.':'Video de aplicaciones · 60 segundos · sin audio · en bucle';
+}
+async function playTV(){
+  if(!tvVideo)return;wantsTVPlaying=true;if(tvVideo.error)tvVideo.load();
+  try{await tvVideo.play();}catch{/* El botón permite iniciar si el navegador bloquea la reproducción automática. */}
+  updateTVControl();
+}
+function initTVVideo(){
+  tvVideo=document.createElement('video');tvVideo.id='tv-video';tvVideo.hidden=true;
+  tvVideo.muted=true;tvVideo.defaultMuted=true;tvVideo.autoplay=true;tvVideo.loop=true;tvVideo.playsInline=true;tvVideo.preload='auto';
+  tvVideo.setAttribute('muted','');tvVideo.setAttribute('playsinline','');tvVideo.setAttribute('webkit-playsinline','');
+  tvVideo.poster=asset('video/poster.jpg');tvVideo.src=asset('video/ws-aplicaciones-3d.mp4');document.body.append(tvVideo);
+  // Una sola textura y un solo reloj sobreviven a los cambios de propuesta y orientación.
+  tvTexture=new THREE.VideoTexture(tvVideo);tvTexture.colorSpace=THREE.SRGBColorSpace;
+  tvPoster=tex(images.tvPoster);
+  const showVideo=()=>{if(tvScreen){tvScreen.material.map=tvTexture;tvScreen.material.needsUpdate=true;}updateTVControl();};
+  tvVideo.addEventListener('loadeddata',showVideo);tvVideo.addEventListener('playing',showVideo);
+  tvVideo.addEventListener('pause',updateTVControl);
+  tvVideo.addEventListener('error',()=>{if(tvScreen){tvScreen.material.map=tvPoster;tvScreen.material.needsUpdate=true;}updateTVControl();});
+  document.addEventListener('pointerdown',()=>{if(ready&&wantsTVPlaying&&tvVideo.paused&&!tvVideo.error)void playTV();},{passive:true});
+  void playTV();
 }
 function television(p){
   const g=group(furniture,'Televisor 93 × 56 cm');g.position.set(p.x,.047,p.z);g.rotation.y=p.rotation;
@@ -133,7 +155,10 @@ function television(p){
   for(const x of [-.20,.20])for(const z of [-.15,.15]){const caster=cylinder(g,.029,.03,x,.03,z,'#252d34');caster.rotation.z=Math.PI/2;}
   box(g,.052,1.27,.045,0,.70,-.025,'#626f7a',{metalness:.7});
   box(g,w,h,.045,0,1.36,0,'#171f26',{metalness:.2});
-  plane(g,w-.027,h-.027,0,1.36,.024,screenTexture());
+  const sw=w-.027,sh=h-.027,videoWidth=Math.min(sw,sh*16/9),videoHeight=videoWidth*9/16;
+  const black=plane(g,sw,sh,0,1.36,.024,null);black.material.color.set('#000000');
+  tvScreen=plane(g,videoWidth,videoHeight,0,1.36,.0245,tvVideo.readyState>=2&&!tvVideo.error?tvTexture:tvPoster);
+  tvScreen.name='Video de aplicaciones WS';tvScreen.userData={kind:'tv-screen',aspect:16/9};
   box(g,.011,.004,.002,w*.39,1.36-h/2+.008,.024,'#8abb9a');
 }
 
@@ -187,13 +212,14 @@ function bind(){
   for(const id of ['show-samples','show-furniture','show-sides','show-dimensions'])$(id).addEventListener('change',visibility);
   $('sheet-size').addEventListener('change',()=>{sheet=Number($('sheet-size').value);if(ready)build();urlState();});
   $('tv-orientation').addEventListener('change',()=>{orientation=$('tv-orientation').value;if(ready)build();urlState();});
+  $('tv-play').addEventListener('click',()=>{if(!tvVideo)return;if(tvVideo.paused||tvVideo.error)void playTV();else{wantsTVPlaying=false;tvVideo.pause();}});
   $('reset').addEventListener('click',()=>setView('perspective'));
   $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(viewer.requestFullscreen)await viewer.requestFullscreen();else toast('La pantalla completa no está disponible.');}catch{toast('La pantalla completa no está disponible.');}});
   $('capture').addEventListener('click',()=>{const a=document.createElement('a');if(ready){renderer.render(scene,camera);a.href=renderer.domElement.toDataURL('image/png');a.download=`WS-${proposals[current].version}-${currentView||'libre'}.png`;}else{a.href=$('fallback-image').src;a.download=`WS-${proposals[current].version}.jpg`;}a.click();});
   addEventListener('popstate',()=>{const q=new URL(location.href).searchParams;sheet=q.get('plancha')==='244'?2.44:2.40;orientation=q.get('pantalla')==='vertical'?'portrait':'landscape';setProposal(proposals[q.get('propuesta')]?q.get('propuesta'):'laterales',false);});
 }
 async function init(){try{
-  const files={...Object.fromEntries(['izquierdo','derecho','fondo','cenefa'].map(k=>[k,asset(`${k}.jpg`)])),corporativa:asset('imagenes/fondo-corporativo-natural.jpg')};
+  const files={...Object.fromEntries(['izquierdo','derecho','fondo','cenefa'].map(k=>[k,asset(`${k}.jpg`)])),tvPoster:asset('video/poster.jpg')};
   await Promise.all(Object.entries(files).map(([k,src])=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>{images[k]=img;resolve();};img.onerror=()=>reject(new Error('No se pudo cargar '+src));img.src=src;})));
   renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   viewer.prepend(renderer.domElement);renderer.domElement.setAttribute('aria-label','Modelo interactivo del stand');
@@ -203,7 +229,7 @@ async function init(){try{
   const sun=new THREE.DirectionalLight('#fff8ee',3);sun.position.set(-3,7,5);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);Object.assign(sun.shadow.camera,{left:-5,right:5,top:5,bottom:-5,near:.1,far:20});sun.shadow.bias=-.0004;sun.shadow.normalBias=.017;scene.add(sun);
   const fill=new THREE.DirectionalLight('#dcecff',1);fill.position.set(4,4,-2);scene.add(fill);
   const ground=new THREE.Mesh(new THREE.PlaneGeometry(100,100),new THREE.ShadowMaterial({opacity:.15}));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;ground.position.y=-.004;scene.add(ground);
-  ready=true;build();resize();setView('perspective',false);new ResizeObserver(resize).observe(viewer);$('loading').hidden=true;requestAnimationFrame(animate);
-  window.standMeeting={get proposal(){return current;},get scene(){return scene;},get booth(){return booth;},get renderer(){return renderer;},get camera(){return camera;},get samples(){return samples;},get furniture(){return furniture;},get settings(){return{sheet,orientation};},spec,setProposal,setView};
-}catch(err){console.error(err);ready=false;$('loading').hidden=true;$('fallback').hidden=false;$('viewer-type').textContent='VISTA DEL MODELO';if(renderer)renderer.domElement.remove();for(const id of ['show-samples','show-furniture','show-sides','show-dimensions','sheet-size','tv-orientation'])$(id).disabled=true;}}
+  initTVVideo();ready=true;build();resize();setView('perspective',false);new ResizeObserver(resize).observe(viewer);$('loading').hidden=true;requestAnimationFrame(animate);
+  window.standMeeting={get proposal(){return current;},get scene(){return scene;},get booth(){return booth;},get renderer(){return renderer;},get camera(){return camera;},get samples(){return samples;},get furniture(){return furniture;},get video(){return tvVideo;},get settings(){return{sheet,orientation};},spec,setProposal,setView};
+}catch(err){console.error(err);ready=false;tvVideo?.pause();$('loading').hidden=true;$('fallback').hidden=false;$('viewer-type').textContent='VISTA DEL MODELO';if(renderer)renderer.domElement.remove();for(const id of ['show-samples','show-furniture','show-sides','show-dimensions','sheet-size','tv-orientation','tv-play'])$(id).disabled=true;$('tv-play').textContent='Video TV · requiere 3D';}}
 updateUI();bind();init();

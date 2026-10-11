@@ -3,6 +3,7 @@ import {OrbitControls} from '../assets/vendor/OrbitControls.js';
 import {proposals,dimensions as spec} from './config.js';
 
 const $=id=>document.getElementById(id), N='#143858', Y='#ecab00';
+const ART_REV='2',asset=file=>`assets/${file}?v=${ART_REV}`;
 const viewer=$('viewer'), query=new URL(location.href).searchParams;
 let current=proposals[query.get('propuesta')]?query.get('propuesta'):'laterales';
 let sheet=query.get('plancha')==='244'?2.44:2.40, orientation=query.get('pantalla')==='vertical'?'portrait':'landscape';
@@ -156,7 +157,7 @@ function updateUI(){const p=proposals[current];$('proposal-title').textContent=p
   document.querySelectorAll('[data-proposal]').forEach(b=>{b.classList.toggle('active',b.dataset.proposal===current);b.setAttribute('aria-pressed',b.dataset.proposal===current);});
   $('sheet-size').value=sheet.toFixed(2);$('tv-orientation').value=orientation;updateFallback();
 }
-function updateFallback(){const p=proposals[current];$('fallback-image').src=`assets/${p.version.toLowerCase()}${currentView==='perspective'?'':'-'+currentView}.jpg`;$('fallback-image').alt=`${p.title} · ${currentView==='top'?'planta':currentView==='front'?'frontal':currentView==='samples'?'muestras':'perspectiva'}`;}
+function updateFallback(){const p=proposals[current];$('fallback-image').src=asset(`${p.version.toLowerCase()}${currentView==='perspective'?'':'-'+currentView}.jpg`);$('fallback-image').alt=`${p.title} · ${currentView==='top'?'planta':currentView==='front'?'frontal':currentView==='samples'?'muestras':'perspectiva'}`;}
 function setProposal(id,push=true){if(!proposals[id])return;current=id;currentView='perspective';updateUI();if(ready){build();setView('perspective',false);}else setView('perspective',false);if(push)urlState();}
 const viewNames={perspective:'Perspectiva',front:'Frontal',top:'Planta',samples:'Muestras'};
 function viewPose(id){const aspect=viewer.clientWidth/viewer.clientHeight,k=Math.max(1,1.2/aspect);let pos,target;
@@ -171,7 +172,7 @@ function setView(id,animate=true){if(!viewNames[id])return;currentView=id;$('vie
 }
 function resize(){if(!renderer)return;const w=viewer.clientWidth,h=viewer.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();if(ready&&currentView)setView(currentView,false);}
 function animate(now){requestAnimationFrame(animate);if(motion){const t=Math.min(1,(now-motion.start)/600),e=1-(1-t)**3;camera.position.lerpVectors(motion.from,motion.pos,e);controls.target.lerpVectors(motion.fromTarget,motion.target,e);if(t===1)motion=null;}controls.update();renderer.render(scene,camera);}
-function panel(id=selectedPanel){selectedPanel=id;$('panel-title').textContent=panelTitles[id];$('panel-image').src=`assets/${id}.jpg`;$('panel-image').alt=panelTitles[id];$('download-jpg').href=`assets/${id}.jpg`;$('download-svg').href=`assets/${id}.svg`;
+function panel(id=selectedPanel){selectedPanel=id;$('panel-title').textContent=panelTitles[id];$('panel-image').src=asset(`${id}.jpg`);$('panel-image').alt=panelTitles[id];$('download-jpg').href=asset(`${id}.jpg`);$('download-svg').href=asset(`${id}.svg`);
   $('panel-size').textContent=id==='fondo'?`${Math.round(sheet*100)} × 244 cm · dos planchas horizontales`:id==='cenefa'?'240 × 24 cm · cenefa':`${Math.round(sheet*100)} × 122 cm · una plancha horizontal`;
   document.querySelectorAll('[data-panel]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.panel===id));
 }
@@ -192,7 +193,7 @@ function bind(){
   addEventListener('popstate',()=>{const q=new URL(location.href).searchParams;sheet=q.get('plancha')==='244'?2.44:2.40;orientation=q.get('pantalla')==='vertical'?'portrait':'landscape';setProposal(proposals[q.get('propuesta')]?q.get('propuesta'):'laterales',false);});
 }
 async function init(){try{
-  const files={izquierdo:'assets/izquierdo.jpg',derecho:'assets/derecho.jpg',fondo:'assets/fondo.jpg',cenefa:'assets/cenefa.jpg',corporativa:'../assets/photos/hangar.jpg'};
+  const files={...Object.fromEntries(['izquierdo','derecho','fondo','cenefa'].map(k=>[k,asset(`${k}.jpg`)])),corporativa:asset('imagenes/fondo-corporativo-natural.jpg')};
   await Promise.all(Object.entries(files).map(([k,src])=>new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>{images[k]=img;resolve();};img.onerror=()=>reject(new Error('No se pudo cargar '+src));img.src=src;})));
   renderer=new THREE.WebGLRenderer({antialias:true,alpha:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   viewer.prepend(renderer.domElement);renderer.domElement.setAttribute('aria-label','Modelo interactivo del stand');

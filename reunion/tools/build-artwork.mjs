@@ -10,10 +10,13 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const out=path.join(root,'reunion/assets');await fs.mkdir(out,{recursive:true});
 const N='#143858',Y='#ecab00',W='#fff',M='#cbd9e4';
 const assets={};
-const files={logo:'assets/logo.jpg',corporativa:'assets/photos/hangar.jpg',...Object.fromEntries(['hangar','contenedor','cubierta','serviteca','campo','cabana','modular','cad-luces','cad-configuraciones'].map(k=>[k,`assets/revision/${k}.jpg`]))};
+const files={
+  logo:'assets/logo.jpg',
+  ...Object.fromEntries(['contenedor','serviteca','campo','cad-luces','cad-configuraciones'].map(k=>[k,`assets/revision/${k}.jpg`])),
+  ...Object.fromEntries(Object.entries({hangar:'hangar-retocado',cubierta:'cubierta-retocada',corporativa:'fondo-corporativo-natural',cabana:'desarrollo-cabana',lodge:'desarrollo-lodge'}).map(([k,f])=>[k,`reunion/assets/imagenes/${f}.jpg`]))
+};
 for(const [k,f] of Object.entries(files)){
   let img=sharp(path.join(root,f));
-  if(k==='cabana')img=img.extract({left:0,top:105,width:736,height:480});
   const b=await img.resize({width:k==='corporativa'?1536:1100,withoutEnlargement:true}).jpeg({quality:88}).toBuffer();
   assets[k]='data:image/jpeg;base64,'+b.toString('base64');
 }
@@ -48,7 +51,10 @@ const icons={
 };
 function icon(k,x,y){return `<g transform="translate(${x} ${y}) scale(.78)" fill="none" color="${Y}" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">${icons[k]}</g>`;}
 function right(){let b=rect(0,0,2400,1220,N)+photo('logo',55,30,300,160,'xMidYMid meet')+text('VENTAJAS COMPETITIVAS',423,102,57,W,700)+text('ESPACIOS LIBRES · FABRICACIÓN A MEDIDA',427,160,28,Y)+rect(55,211,2290,4,'#4c6c85');
- b+=text('NUEVOS DESARROLLOS',57,287,35,W,700)+text('Casas · Cabañas · Lodge',57,336,27,M)+photo('cabana',57,379,562,268)+rect(57,647,562,5,Y)+rect(57,684,562,269,'#274b68',5)+`<g fill="none" stroke="#93aabd" stroke-width="3"><path d="M205 846V821a133 133 0 0 1 266 0v25M190 846h296M230 846v-25a108 108 0 0 1 216 0v25"/><path d="M316 846v-65h47v65"/></g>`+text('SEGUNDA IMAGEN POR DEFINIR',338,912,24,M,500,'middle')+text('Nuevas formas de habitar',57,1006,29,W)+text('Diseño y nuevas aplicaciones',57,1055,25,M)+rect(668,261,2,830,'#4c6c85');
+ b+=text('NUEVOS DESARROLLOS',57,287,35,W,700)+text('Casas · Cabañas · Lodge',57,336,27,M);
+ b+=photo('cabana',57,379,562,268)+rect(57,647,562,5,Y)+text('CABAÑA · PROPUESTA CONCEPTUAL',57,677,21,M,500);
+ b+=photo('lodge',57,700,562,269)+rect(57,969,562,5,Y)+text('LODGE · PROPUESTA CONCEPTUAL',57,999,21,M,500);
+ b+=text('Nuevas formas de habitar',57,1055,29,W)+rect(668,261,2,830,'#4c6c85');
  benefits.forEach((a,i)=>{const x=725+(i%3)*544,y=284+Math.floor(i/3)*259;
   b+=icon(a.icon,x,y)+lines(a.title,x,y+129,30,W,700)+lines(a.detail,x,y+208,25,M);
  });

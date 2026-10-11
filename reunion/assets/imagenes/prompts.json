@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-11",
+  "mode": "built-in imagegen",
+  "note": "Retoques sobre tres referencias existentes y dos propuestas conceptuales de nuevos desarrollos. Imágenes de revisión, no artes finales de imprenta.",
+  "images": [
+    {
+      "file": "hangar-retocado.jpg",
+      "kind": "edit",
+      "references": [
+        "assets/revision/hangar.jpg"
+      ],
+      "prompt": "Use case: precise-object-edit. Asset type: architectural product photograph for a printed exhibition panel, Warehouse Solutions. Edit the supplied real blue hangar photo. Keep the same blue self-supporting arched corrugated steel warehouse, its existing proportions, rib spacing, front opening, roof shape, concrete base, and three-quarter camera direction. Clean up the yard: remove the large yellow/gray freight container in front on the left, the orange cherry-picker lift, scaffolding, parked cars, loose construction materials and the intruding tree on the right. Replace the rough foreground with a believable clean light gray concrete apron with subtle expansion joints, correctly meeting the existing base and doorway. Preserve realistic neighboring industrial buildings in the distance. Do not redesign the warehouse or close its door. Natural daytime architectural photography, accurate blue steel, moderate saturation, realistic fine surface texture and shadows, no glossy CGI sheen or dramatic HDR. Pull the camera back just enough to show the COMPLETE curved roof and both ends with breathing room; the hangar should fit within the central half of image height, so it remains visible when cropped into a very wide banner. Very wide horizontal composition approximately 3:1, high resolution. No people, no labels, no added text, no logos or watermarks. This is a visualization retouch of the supplied building, not a different building."
+    },
+    {
+      "file": "cubierta-retocada.jpg",
+      "kind": "edit",
+      "references": [
+        "assets/revision/cubierta.jpg"
+      ],
+      "prompt": "Use case: precise-object-edit. Asset type: architectural application image for a printed exhibition panel. Edit the supplied photograph of the sports court with a curved blue metal roof and lime-green perimeter columns. Preserve the identity, colors and plausible geometry of this same curved roof, mesh walls, green columns, court and basketball hoop. Remove the large tree trunk and branches in the right foreground that block the roof. Reconstruct the hidden right corner of the structure consistently. Widen the view and move the viewpoint slightly higher so the entire continuous curved roof, both side edges and its depth are clearly visible. The roof is the main subject. Remove the group playing soccer; leave the court empty and tidy. Keep modest low landscaping and an unobtrusive surrounding park, natural sunlight, realistic architectural photography, moderate contrast and believable metal surface texture. Do not replace this with a different type of building, no extra central supporting columns, no oversized facade. Compose a very wide horizontal approximately 3:1 image with the entire structure contained within the central half of image height and generous sky/foreground to permit a wide crop without cutting the roof. High detail, no collage, no border, no captions or watermarks."
+    },
+    {
+      "file": "fondo-corporativo-natural.jpg",
+      "kind": "edit",
+      "references": [
+        "assets/photos/hangar.jpg",
+        "assets/logo.jpg"
+      ],
+      "prompt": "Use case: lighting-weather. Asset type: large exhibition backdrop. Image 1 is the edit target, the approved silver curved steel warehouse. Image 2 is the official logo reference only; preserve that logo's exact design and wording on the existing facade sign. Make image 1 look like a credible professional architectural photograph rather than a cinematic AI render. Keep the SAME continuous arched corrugated silver steel warehouse, its broad dark gray closed sliding doors, concrete plinth, yellow bollards, building proportions, front/left three-quarter viewpoint, and existing facade logo sign in the same place. Keep the blue sign with the exact words \"Warehouse Solutions\" (Warehouse white, Solutions gold) and the WS white arch / gold letter symbol from reference 2. Do not reinterpret or redraw the branding. Replace exaggerated sunset shine, golden HDR glare and wet mirrored pavement with soft natural late-morning daylight, subtle metal reflections, neutral dry concrete with fine believable texture, mild realistic wear and soft shadows. Keep the industrial context understated; do not add people, new signs, buildings or machinery. Step back slightly so the complete warehouse fits comfortably within the central 78% of the frame width, with uncut roof and an open area of sky above. Near-square architectural composition around 6:5; high resolution, photographic lens rendering, straight building lines, no added headline, no watermark. This is the approved image made more natural, not a new design."
+    },
+    {
+      "file": "desarrollo-cabana.jpg",
+      "kind": "generate",
+      "references": [],
+      "prompt": "Use case: photorealistic-natural. Asset type: conceptual architectural visualization for the \"Nuevos desarrollos — Casas, Cabañas, Lodge\" panel of Warehouse Solutions, a manufacturer of self-supporting curved steel roofs. Create ONE distinctive contemporary small cabin using a continuous shallow barrel-vault shell of finely ribbed galvanized steel, curving almost to a low concrete plinth on both sides; no pitched/gable roof. The front end wall combines warm natural timber and large clear glazing with a visible modest living space. Approximately a compact one-bedroom cabin, plausible single-story scale, simple wooden deck, restrained landscaping on a green meadow at the edge of southern Chilean woodland. Show front and one long curved side, entire building unobstructed, roof material and curvature must read clearly. A warm but natural daylight architectural photograph, realistic construction joints, natural vegetation, no plastic CG surfaces, no exaggerated luxury. Horizontal panoramic 2:1 composition, cabin centered with breathing room and occupying the middle two thirds of width, enough sky and ground to crop gently. This is a future design concept, do not imply a real completed project through signs. No people, no logos, no words, no watermark, no montage, no black bars."
+    },
+    {
+      "file": "desarrollo-lodge.jpg",
+      "kind": "generate",
+      "references": [],
+      "prompt": "Use case: photorealistic-natural. Asset type: conceptual architectural visualization for an exhibition panel about future uses of self-supporting curved steel roofs. Generate ONE mountain lodge concept clearly DIFFERENT from a small standalone cabin: three staggered low barrel-vault volumes of ribbed dark graphite galvanized steel, joined with restrained glazed links around a small shared timber terrace. Each roof is a continuous structural steel arch, not a gabled pitched roof and not a tent. Warm timber-framed glazed end facades, believable one-story lodge scale with visible main entrance, small stone base and subtle path through alpine grasses. At a forest edge in the Chilean Andes with distant modest mountain ridges; no snow burying the architecture, no dramatic fantasy landscape. Three-quarter slightly elevated architectural photography so the complete curved roofs and different volumes are clear, not cut off and not hidden by foreground trees. Soft morning daylight, realistic matte metal and natural wood, calm hospitality atmosphere, high detail, natural texture and restrained colors. Panoramic horizontal 2:1 composition, keep the whole lodge within the middle 75% of the image width and central 65% of image height to allow a crop for a printed panel. No people, no cars, no text, no signage, no logo, no border, no watermark; a single coherent image."
+    }
+  ]
+}

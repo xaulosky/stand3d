@@ -3,7 +3,7 @@ import {OrbitControls} from '../assets/vendor/OrbitControls.js';
 import {proposals,dimensions as spec} from './config.js';
 
 const $=id=>document.getElementById(id), N='#143858', Y='#ecab00';
-const ART_REV='5',asset=file=>`assets/${file}?v=${ART_REV}`;
+const ART_REV='6',asset=file=>`assets/${file}?v=${ART_REV}`;
 const viewer=$('viewer'), query=new URL(location.href).searchParams;
 let current=proposals[query.get('propuesta')]?query.get('propuesta'):'laterales';
 let sheet=query.get('plancha')==='244'?2.44:2.40, orientation=query.get('pantalla')==='vertical'?'portrait':'landscape';

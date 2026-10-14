@@ -55,3 +55,11 @@ El movimiento dentro de la TV requiere WebGL. Si no está disponible, el visor c
 ### Cambio de imagen · 14 de octubre de 2026
 
 La foto de «TECHO HANGAR», en la esquina superior izquierda de la plancha izquierda, se reemplaza por la imagen adjunta del hangar azul con el letrero «piso caminante». Se extrajo el JPEG original del PDF entregado por el cliente, sin regenerarlo ni retocarlo. Se conserva el archivo completo en `assets/imagenes/hangar-cliente-20261014.jpg`; el arte usa un encuadre alto para mantener visible la cima del arco en la casilla apaisada. V3, V4 y V5 comparten esta plancha. El JPG, SVG y las vistas del modelo reflejan el cambio.
+
+### Nuevos desarrollos · referencias del cliente · 14 de octubre de 2026
+
+Las dos imágenes del extremo derecho de la plancha derecha se regeneran con ImageGen a partir de las referencias enviadas: foto 2 arriba y foto 3 abajo. Se amplía el entorno al formato panorámico, se eliminan las bandas negras de la foto 2 y se mantienen las fachadas acristaladas, los techos curvos y el carácter de ambas casas. Los edificios completos quedan dentro de sus recuadros; la posición hacia el pasillo se conserva. V3, V4 y V5, el JPG, el SVG y las vistas de referencia incorporan la revisión.
+
+- [Foto 2 · recuadro superior](assets/imagenes/desarrollo-cabana-cliente-20261014.jpg): 1686 × 804 px, misma proporción que el espacio de 562 × 268 del arte.
+- [Foto 3 · recuadro inferior](assets/imagenes/desarrollo-lodge-cliente-20261014.jpg): 1686 × 807 px, misma proporción que el espacio de 562 × 269 del arte.
+- [Prompts, referencias y formato](assets/imagenes/prompts-desarrollos-20261014.json): herramienta integrada ImageGen. Son imágenes conceptuales regeneradas, no documentos de una obra construida.

@@ -13,7 +13,7 @@ const assets={},photoSizes={};
 const files={
   logo:'assets/logo.jpg',
   ...Object.fromEntries(['contenedor','serviteca','campo','cad-luces','cad-configuraciones'].map(k=>[k,`assets/revision/${k}.jpg`])),
-  ...Object.fromEntries(Object.entries({hangar:'hangar-cliente-20261014',cubierta:'cubierta-retocada',corporativa:'fondo-corporativo-natural',cabana:'desarrollo-cabana',lodge:'desarrollo-lodge'}).map(([k,f])=>[k,`reunion/assets/imagenes/${f}.jpg`]))
+  ...Object.fromEntries(Object.entries({hangar:'hangar-cliente-20261014',cubierta:'cubierta-retocada',corporativa:'fondo-corporativo-natural',cabana:'desarrollo-cabana-cliente-20261014',lodge:'desarrollo-lodge-cliente-20261014'}).map(([k,f])=>[k,`reunion/assets/imagenes/${f}.jpg`]))
 };
 for(const [k,f] of Object.entries(files)){
   let img=sharp(path.join(root,f));

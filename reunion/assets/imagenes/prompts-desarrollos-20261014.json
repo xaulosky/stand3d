@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-14",
+  "mode": "built-in imagegen",
+  "note": "Regeneración panorámica a partir de las fotografías 2 y 3 entregadas por el cliente. Imágenes conceptuales para los dos recuadros de Nuevos desarrollos en el extremo derecho de la plancha derecha.",
+  "images": [
+    {
+      "file": "desarrollo-cabana-cliente-20261014.jpg",
+      "slot": "superior",
+      "reference_upload": "2(1).jpeg",
+      "panel_slot": {
+        "width": 562,
+        "height": 268
+      },
+      "output_pixels": {
+        "width": 1686,
+        "height": 804
+      },
+      "prompt": "Use case: precise-object-edit.\nAsset type: architectural concept image for the TOP photo slot in the \"Nuevos desarrollos\" printed panel of a Warehouse Solutions exhibition stand.\nInput image 1: edit target and architectural reference. Regenerate / outpaint THIS SAME arched forest house into a clean wide horizontal photograph. Remove the black letterbox bars and tiny edge fragments. Fill the entire canvas with the architecture and a continuous natural environment.\nKeep invariants: one broad semicircular corrugated steel shell, pale weathered metal outer trim and dark inner arch; the front-on symmetrical tall glass facade with thin dark rectangular mullions; warm amber interior; large central double entrance; the two matching small outward opening rectangular windows; the short central flight of stone steps and landscaped rocks, grasses and planters; mature woodland backdrop. Preserve its distinctive architecture and proportions, not a generic replacement building.\nComposition: panoramic landscape aspect ratio approximately 2.10:1, designed for a 562 by 268 rectangular slot. Pull the camera back and EXTEND the scene to both left and right, rather than squeezing the building or cutting off its roof. Show the COMPLETE arch from crown to both ground edges, entrance and steps. Put the entire building within the central 75% of width and central 72% of image height, leaving breathing room above the crown and below the steps for tiny final trimming. Level front-facing architectural camera with believable verticals.\nStyle: realistic professional architectural photography, detailed ribbed steel, realistic glass reflections, natural trees and stone, subtle late-afternoon ambient light and warm interior as in the reference. High-resolution fine details, restrained colors. Keep the house itself and its setting as the focus.\nAvoid: black bands, borders, collage, duplicate buildings, text, logos, watermarks, people, extra floors, changes to the curvature, theatrical oversaturation. Single coherent full-bleed wide image."
+    },
+    {
+      "file": "desarrollo-lodge-cliente-20261014.jpg",
+      "slot": "inferior",
+      "reference_upload": "3(1).jpg",
+      "panel_slot": {
+        "width": 562,
+        "height": 269
+      },
+      "output_pixels": {
+        "width": 1686,
+        "height": 807
+      },
+      "prompt": "Use case: precise-object-edit.\nAsset type: architectural concept image for the BOTTOM photo slot in the \"Nuevos desarrollos\" printed panel of a Warehouse Solutions exhibition stand.\nInput image 1: edit target and architectural reference. Regenerate / outpaint THIS SAME blue-gray arched metal house from a tall portrait photo into a panoramic horizontal architectural photograph.\nKeep invariants: ONE two-level barrel-vault house made from continuous finely corrugated deep blue-gray metal; tall glazed arched front facade with thin dark vertical frames, upper mezzanine visible behind glass, warm indoor lighting; glazed entrance on the ground floor; the long right-hand metal shell with the same small rectangular side windows; low timber front deck, small concrete side path, green lawn and trees. Preserve its recognizable proportions, curved geometry and FRONT/RIGHT three-quarter viewpoint. This is not a cluster of cabins or a completely new lodge.\nComposition: wide landscape aspect ratio approximately 2.10:1, designed for a 562 by 269 rectangular slot. Pull the camera back enough to reveal the COMPLETE curved building, both ground edges, deck and right rear end. Expand the environment to both sides to replace the excess vertical sky and foreground of the source. Entire house within the middle 75% of canvas width and middle 72% of image height, leaving margins above the crown and below the deck so a slight final crop cannot clip the structure. Keep the original camera direction and a realistic lens, no squeezing or stretching.\nLighting/style: soft blue-hour / sunset sky with restrained warm cloud edges, amber light from inside as in the original; realistic professional architectural photography, detailed metal ribs, believable glass and garden, natural colors and subtle contrast.\nAvoid: text, added logos, watermarks, borders or black bands; people or cars; extra houses or roof volumes; gabled or A-frame shapes; dramatic fantasy lighting; changes to side-window arrangement. Single coherent full-bleed wide image."
+    }
+  ]
+}

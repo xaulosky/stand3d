@@ -1,0 +1,11 @@
+{
+  "name": "warehouse-stand-print-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:print": "node build-print-package.mjs"
+  },
+  "dependencies": {
+    "sharp": "0.35.5"
+  }
+}

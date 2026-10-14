@@ -1,0 +1,25 @@
+WAREHOUSE SOLUTIONS · STAND 2-D02
+Paneles completos · 14 de octubre de 2026
+
+Los JPG están exportados a 150 píxeles por pulgada y tamaño final.
+Los SVG conservan el texto vectorial y las fotografías HD incrustadas.
+Sus medidas físicas están definidas en milímetros; no necesitan archivos externos.
+
+01 · Lateral izquierdo: 240 × 122 cm.
+02 · Lateral derecho: 240 × 122 cm.
+03 · Fondo completo: 240 × 244 cm.
+04 · Mitad superior del fondo: 240 × 122 cm.
+05 · Mitad inferior del fondo: 240 × 122 cm.
+06 · Cenefa: 240 × 24 cm.
+
+Para las cuatro planchas de PVC, utilizar los archivos 01, 02, 04 y 05.
+El archivo 03 es el fondo unido, como alternativa y referencia de montaje;
+no se imprime además de las dos mitades. La cenefa se produce por separado.
+JPG y SVG son alternativas del mismo arte; elegir un solo formato por pieza.
+
+Formato de trabajo utilizado: planchas de 122 × 240 cm.
+Medidas finales sin sangrado extra ni marcas de corte. La imprenta debe
+acordar el sangrado y la terminación según su sistema de producción.
+Color sRGB; convertir al perfil de la impresora con su flujo de color habitual.
+Las fotografías proceden de los diez TIFF escalados 4× entregados por el cliente.
+Los PNG/JPG de las vistas 3D no forman parte de estos artes de impresión.

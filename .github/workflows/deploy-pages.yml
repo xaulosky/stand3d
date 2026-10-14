@@ -23,12 +23,24 @@ jobs:
     steps:
       - name: Obtener proyecto
         uses: actions/checkout@v4
+      - name: Preparar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Generar paquete de impresión
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends fonts-urw-base35
+          npm install --prefix reunion/tools --no-audit --no-fund
+          npm run build:print --prefix reunion/tools
+      - name: Reunir archivos del sitio
+        run: rsync -a --exclude='.git/' --exclude='.github/' --exclude='node_modules/' --exclude='tools/' ./ "${{ runner.temp }}/stand3d-pages/"
       - name: Configurar GitHub Pages
         uses: actions/configure-pages@v5
       - name: Preparar sitio estático
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: '${{ runner.temp }}/stand3d-pages'
       - name: Publicar
         id: deployment
         uses: actions/deploy-pages@v4

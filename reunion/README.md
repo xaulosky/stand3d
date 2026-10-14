@@ -77,3 +77,15 @@ El botón de descarga genera un SVG autónomo con estas imágenes completas incr
 El botón «ZIP para imprimir» está junto a «Revisar gráficas» y dentro de la ventana de gráficas. Descarga `descargas/WS_Paneles_completos_para_imprimir.zip`, con seis JPG a 150 ppp y seis SVG autónomos con imágenes HD, medidas e indicaciones de impresión. Incluye ambos laterales de 240 × 122 cm, el fondo de 240 × 244 cm completo y dividido en dos mitades, y la cenefa de 240 × 24 cm. El paquete corresponde al formato de plancha 122 × 240 cm indicado en el botón, incluso si el visor se cambia a 244 cm.
 
 La publicación genera el ZIP desde los SVG y las fotografías HD existentes mediante `tools/build-print-package.mjs`. Requiere Node.js 24, Python 3, `fonts-urw-base35` y `npm install --prefix reunion/tools`; ejecutar `npm run build:print --prefix reunion/tools` desde la raíz. La versión de Sharp está fijada en `tools/package.json`. Cada JPG se comprueba por tamaño y densidad y se verifica la integridad del ZIP. El paquete se incorpora al sitio desplegado y se excluye de Git. El navegador inicia una descarga directa, sin renderizar los paneles ni mantener todo el ZIP en memoria.
+
+### Títulos y hangar completo · 14 de octubre de 2026
+
+Las dos imágenes de «Nuevos desarrollos» llevan el título exacto «CENTRO DE EVENTOS - REFUGIOS - LODGE» en una franja azul sobre cada fotografía, según la referencia marcada por el cliente.
+
+El hangar se regenera con ImageGen a partir de la fotografía completa y la indicación de alejar la cámara. El panorama muestra la bodega entera, los extremos del arco y su apoyo en el terreno. Se conserva el encuadre completo al incorporarlo al panel izquierdo. La fotografía anterior y su copia escalada se conservan en sus rutas originales.
+
+- [PNG original para ampliar](assets/imagenes/hangar-panorama-20261014.png): 2109 × 745 píxeles, resolución nativa de generación, sin escalado adicional.
+- [JPEG HD del proyecto](assets/imagenes/hangar-panorama-20261014.jpg): 8436 × 2980 píxeles, procedente del nuevo TIFF escalado 4× entregado por el cliente, calidad 96 y muestreo 4:4:4.
+- [Prompt y referencias](assets/imagenes/prompts-hangar-panorama-20261014.json).
+
+El visor interactivo, los SVG descargables y el ZIP de impresión utilizan los nuevos artes con el hangar ya escalado por el cliente. La descarga individual del JPEG HD del hangar está disponible en la pestaña del panel izquierdo. Se mantienen las dimensiones completas de los diez TIFF ampliados, sin recortar el nuevo hangar ni alterar los otros nueve archivos.

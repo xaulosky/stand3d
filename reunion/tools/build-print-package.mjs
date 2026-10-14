@@ -29,7 +29,7 @@ async function completeSVG(id){
   const refs=new Set([...body.matchAll(/<image\b[^>]*\bhref="([^"]+)"/g)].map(m=>m[1]));
   for(const href of refs){
     if(href.startsWith('data:image/'))continue;
-    if(!/^imagenes-hd\/[a-z-]+\.jpg$/.test(href))throw Error('Referencia de imagen inesperada: '+href);
+    if(!/^(?:imagenes-hd|imagenes)\/[a-z0-9-]+\.jpg$/.test(href))throw Error('Referencia de imagen inesperada: '+href);
     const bytes=await fs.readFile(path.join(root,'assets',href));
     body=body.replaceAll(`href="${href}"`,`href="data:image/jpeg;base64,${bytes.toString('base64')}"`);
   }

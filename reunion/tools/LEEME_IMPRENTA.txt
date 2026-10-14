@@ -21,5 +21,7 @@ Formato de trabajo utilizado: planchas de 122 × 240 cm.
 Medidas finales sin sangrado extra ni marcas de corte. La imprenta debe
 acordar el sangrado y la terminación según su sistema de producción.
 Color sRGB; convertir al perfil de la impresora con su flujo de color habitual.
-Las fotografías proceden de los diez TIFF escalados 4× entregados por el cliente.
+Las diez imágenes proceden de los TIFF escalados 4× entregados por el cliente.
+El nuevo hangar panorámico usa el TIFF de 8436 × 2980 píxeles y conserva
+el encuadre con la bodega y toda su base visibles.
 Los PNG/JPG de las vistas 3D no forman parte de estos artes de impresión.

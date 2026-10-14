@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-14",
+  "method": "built-in image_gen",
+  "edit_target": "../imagenes-hd/hangar.jpg",
+  "client_framing_reference": "image(20261014-171104).png",
+  "original_png": "hangar-panorama-20261014.png",
+  "project_jpg": "hangar-panorama-20261014.jpg",
+  "native_dimensions": {
+    "width": 2109,
+    "height": 745
+  },
+  "prompt": "Use case: precise-object-edit.\nAsset type: standalone photorealistic architectural photograph for a printed exhibition panel, also supplied separately for professional upscaling.\nInput images: Image 1 is the original full-resolution blue hangar photograph (edit target). Image 2 is the client's marked-up panel crop (framing instructions only; do not reproduce its text or graphic layout).\nPrimary request: regenerate the SAME warehouse photograph from a noticeably MORE DISTANT camera position, so the ENTIRE blue ground-to-ground arched warehouse is visible, including the full left-to-right base on the ground, both feet of the arch, the full highest curve, and the surrounding paved apron.\nComposition: very wide panoramic landscape, aspect ratio approximately 2.82:1, ideally 3840 x 1360 pixels at maximum available native detail. Keep the same front-left three-quarter viewpoint but pull the camera back substantially. The whole warehouse should fit comfortably inside the frame, with visible space beyond both ends, clear ground below the whole base and sky above the apex; no part of the building or its foundation may touch the image edge or be cropped. Make the ground-to-ground curved construction unmistakable, not a curved roof placed on tall vertical side walls. Keep the building readable and visually dominant. Allow generous safe margins so it fits a 769-by-273 panel image box.\nPreserve: cobalt-blue ribbed metal barrel-vault shell extending down to the low foundation on both sides, dark charcoal front facade, same open industrial door, yellow delivery trailer inside, existing industrial yard context, orange articulated lift and work equipment, realistic late-afternoon overcast illumination. Preserve the existing facade brand exactly: white 'piso caminante' lettering and yellow geometric mark. Maintain believable scale, perspective, metal texture and construction.\nOutput: ONLY the regenerated photograph, edge-to-edge; no red instructions, no yellow border, no labels, no TECHO HANGAR caption, no graphic panel, no watermark. Do not add new architecture or extra people. Sharp natural photographic detail appropriate for later upscaling; no artificial oversharpening.",
+  "original_png_upscaled": false,
+  "project_jpg_source": {
+    "type": "client_upscaled_tiff",
+    "filename": "grandefcc34186-eaf7-49cf-979f-edb77474d0dc-high fidelity v2-4x.tiff",
+    "width": 8436,
+    "height": 2980,
+    "scale_factor": 4,
+    "sha256": "112ce3c978240b1eb119b23b370042d23b1db10e841eb91d9538a786e9597afc",
+    "jpeg_quality": 96,
+    "chroma_subsampling": "4:4:4",
+    "color": "sRGB"
+  }
+}

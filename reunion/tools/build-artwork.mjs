@@ -12,7 +12,8 @@ const N='#143858',Y='#ecab00',W='#fff',M='#cbd9e4';
 const assets={},photoSizes={};
 const files={
   logo:'assets/logo.jpg',
-  ...Object.fromEntries(['hangar','contenedor','cubierta','serviteca','campo','cad-luces','cad-configuraciones','corporativa','cabana','lodge'].map(k=>[k,`reunion/assets/imagenes-hd/${k}.jpg`]))
+  ...Object.fromEntries(['hangar','contenedor','cubierta','serviteca','campo','cad-luces','cad-configuraciones','corporativa','cabana','lodge'].map(k=>[k,`reunion/assets/imagenes-hd/${k}.jpg`])),
+  hangar:'reunion/assets/imagenes/hangar-panorama-20261014.jpg'
 };
 for(const [k,f] of Object.entries(files)){
   const source=await fs.readFile(path.join(root,f)),img=sharp(source);
@@ -27,11 +28,8 @@ const rect=(x,y,w,h,c,r=0)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" 
 const text=(s,x,y,size=32,c=N,weight=400,anchor='start')=>`<text x="${x}" y="${y}" font-family="Arial, Helvetica, sans-serif" font-size="${size}" fill="${c}" font-weight="${weight}" text-anchor="${anchor}">${esc(s)}</text>`;
 const lines=(arr,x,y,size=30,c=N,weight=400,anchor='start')=>arr.map((s,i)=>text(s,x,y+i*size*1.24,size,c,weight,anchor)).join('');
 const photo=(k,x,y,w,h,fit='xMidYMid slice')=>{
-  // El encuadre alto del adjunto conserva la cima del arco en la casilla apaisada.
-  if(k==='hangar'){
-    const imageHeight=w*photoSizes[k].height/photoSizes[k].width;
-    return `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" overflow="hidden"><image href="${assets[k]}" x="0" y="${-(imageHeight-h)*.22}" width="${w}" height="${imageHeight}" preserveAspectRatio="xMidYMid meet"/></svg>`;
-  }
+  // El nuevo panorama muestra la bodega y su base completas, sin recortarlas.
+  if(k==='hangar')fit='xMidYMid meet';
   return `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" overflow="hidden"><image href="${assets[k]}" width="${w}" height="${h}" preserveAspectRatio="${fit}"/></svg>`;
 };
 const svg=(body,w,h,title)=>`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><title>${esc(title)}</title>${body}</svg>`;
@@ -62,9 +60,12 @@ function icon(k,x,y){return `<g transform="translate(${x} ${y}) scale(.78)" fill
 function right(){let b=rect(0,0,2400,1220,N)+photo('logo',55,30,300,160,'xMidYMid meet')+text('VENTAJAS COMPETITIVAS',423,102,57,W,700)+text('ESPACIOS LIBRES · FABRICACIÓN A MEDIDA',427,160,28,Y)+rect(55,211,2290,4,'#4c6c85');
  // En el costado derecho, el borde derecho del arte queda hacia el acceso.
  const developmentX=1783;
- b+=text('NUEVOS DESARROLLOS',developmentX,287,35,W,700)+text('Casas · Cabañas · Lodge',developmentX,336,27,M);
- b+=photo('cabana',developmentX,379,562,268)+rect(developmentX,647,562,5,Y)+text('CABAÑA · PROPUESTA CONCEPTUAL',developmentX,677,21,M,500);
- b+=photo('lodge',developmentX,700,562,269)+rect(developmentX,969,562,5,Y)+text('LODGE · PROPUESTA CONCEPTUAL',developmentX,999,21,M,500);
+ const developmentTitle='CENTRO DE EVENTOS - REFUGIOS - LODGE';
+ b+=text('NUEVOS DESARROLLOS',developmentX,287,35,W,700);
+ b+=rect(developmentX,315,562,44,'#244373')+text(developmentTitle,developmentX+281,344,22,W,700,'middle');
+ b+=photo('cabana',developmentX,379,562,268)+rect(developmentX,647,562,5,Y);
+ b+=rect(developmentX,658,562,34,'#244373')+text(developmentTitle,developmentX+281,682,22,W,700,'middle');
+ b+=photo('lodge',developmentX,700,562,269)+rect(developmentX,969,562,5,Y);
  b+=text('Nuevas formas de habitar',developmentX,1055,29,W)+rect(1733,261,2,830,'#4c6c85');
  benefits.forEach((a,i)=>{const x=75+(i%3)*544,y=284+Math.floor(i/3)*259;
   b+=icon(a.icon,x,y)+lines(a.title,x,y+129,30,W,700)+lines(a.detail,x,y+208,25,M);
@@ -78,7 +79,7 @@ for(const [name,body] of [['izquierdo',left()],['derecho',right()],['fondo',rear
  // Plantilla ligera con referencias a las fotografías completas. El botón de
  // descarga del visor las incrusta para obtener un único SVG autónomo.
  let linked=body;
- for(const [key,data] of Object.entries(assets))if(key!=='logo')linked=linked.replaceAll(data,`imagenes-hd/${key}.jpg`);
+ for(const [key,data] of Object.entries(assets))if(key!=='logo')linked=linked.replaceAll(data,path.relative(out,path.join(root,files[key])).split(path.sep).join('/'));
  await fs.writeFile(path.join(out,name+'.svg'),linked);
  // Texturas web de hasta 4096 px; la cenefa mantiene sus dimensiones anteriores.
  // Se renderiza directamente desde el SVG a esa resolución, sin ampliar un JPG.

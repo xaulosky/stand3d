@@ -3,7 +3,7 @@ import {OrbitControls} from '../assets/vendor/OrbitControls.js';
 import {proposals,dimensions as spec} from './config.js';
 
 const $=id=>document.getElementById(id), N='#143858', Y='#ecab00';
-const ART_REV='7',asset=file=>`assets/${file}?v=${ART_REV}`;
+const ART_REV='9',asset=file=>`assets/${file}?v=${ART_REV}`;
 const viewer=$('viewer'), query=new URL(location.href).searchParams;
 let current=proposals[query.get('propuesta')]?query.get('propuesta'):'laterales';
 let sheet=query.get('plancha')==='244'?2.44:2.40, orientation=query.get('pantalla')==='vertical'?'portrait':'landscape';
@@ -198,6 +198,7 @@ function setView(id,animate=true){if(!viewNames[id])return;currentView=id;$('vie
 function resize(){if(!renderer)return;const w=viewer.clientWidth,h=viewer.clientHeight;renderer.setSize(w,h);camera.aspect=w/h;camera.updateProjectionMatrix();if(ready&&currentView)setView(currentView,false);}
 function animate(now){requestAnimationFrame(animate);if(motion){const t=Math.min(1,(now-motion.start)/600),e=1-(1-t)**3;camera.position.lerpVectors(motion.from,motion.pos,e);controls.target.lerpVectors(motion.fromTarget,motion.target,e);if(t===1)motion=null;}controls.update();renderer.render(scene,camera);}
 function panel(id=selectedPanel){selectedPanel=id;$('panel-title').textContent=panelTitles[id];$('panel-image').src=asset(`${id}.jpg`);$('panel-image').alt=panelTitles[id];$('download-jpg').href=asset(`${id}.jpg`);$('download-svg').href=asset(`${id}.svg`);
+  $('download-hangar').hidden=id!=='izquierdo';
   $('panel-size').textContent=id==='fondo'?`${Math.round(sheet*100)} × 244 cm · dos planchas horizontales`:id==='cenefa'?'240 × 24 cm · cenefa':`${Math.round(sheet*100)} × 122 cm · una plancha horizontal`;
   document.querySelectorAll('[data-panel]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.panel===id));
 }

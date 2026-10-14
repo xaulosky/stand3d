@@ -12,13 +12,14 @@ const N='#143858',Y='#ecab00',W='#fff',M='#cbd9e4';
 const assets={},photoSizes={};
 const files={
   logo:'assets/logo.jpg',
-  ...Object.fromEntries(['contenedor','serviteca','campo','cad-luces','cad-configuraciones'].map(k=>[k,`assets/revision/${k}.jpg`])),
-  ...Object.fromEntries(Object.entries({hangar:'hangar-cliente-20261014',cubierta:'cubierta-retocada',corporativa:'fondo-corporativo-natural',cabana:'desarrollo-cabana-cliente-20261014',lodge:'desarrollo-lodge-cliente-20261014'}).map(([k,f])=>[k,`reunion/assets/imagenes/${f}.jpg`]))
+  ...Object.fromEntries(['hangar','contenedor','cubierta','serviteca','campo','cad-luces','cad-configuraciones','corporativa','cabana','lodge'].map(k=>[k,`reunion/assets/imagenes-hd/${k}.jpg`]))
 };
 for(const [k,f] of Object.entries(files)){
-  let img=sharp(path.join(root,f));
+  const source=await fs.readFile(path.join(root,f)),img=sharp(source);
   photoSizes[k]=await img.metadata();
-  const b=await img.resize({width:k==='corporativa'?1536:1100,withoutEnlargement:true}).jpeg({quality:88}).toBuffer();
+  // Los SVG descargables incluyen los JPG completos a resolución 4×.
+  // Se conserva el tratamiento anterior del logo, cuyo original no cambió.
+  const b=k==='logo'?await img.resize({width:1100,withoutEnlargement:true}).jpeg({quality:88}).toBuffer():source;
   assets[k]='data:image/jpeg;base64,'+b.toString('base64');
 }
 const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
@@ -74,7 +75,16 @@ function right(){let b=rect(0,0,2400,1220,N)+photo('logo',55,30,300,160,'xMidYMi
 function rear(){let b=rect(0,0,2400,2440,N)+photo('corporativa',18,359,2364,2063)+rect(18,18,2364,341,N)+text('FÁBRICA DE TECHOS',1200,132,94,W,700,'middle')+text('Y BODEGAS AUTOPORTANTES',1200,258,91,W,700,'middle')+rect(100,326,2200,8,Y);return svg(b,2400,2440,'Fondo corporativo · dos planchas horizontales');}
 function fascia(){const b=rect(0,0,2400,240,N)+photo('logo',30,22,355,196,'xMidYMid meet')+rect(426,41,2,153,'#5d7b91')+text('FÁBRICA DE TECHOS Y BODEGAS',497,108,61,W,700)+text('AUTOPORTANTES',497,179,61,W,700)+text('2-D02',2280,145,77,Y,700,'end')+rect(0,230,2400,10,Y);return svg(b,2400,240,'Cenefa · 240 × 24 cm');}
 for(const [name,body] of [['izquierdo',left()],['derecho',right()],['fondo',rear()],['cenefa',fascia()]]){
- await fs.writeFile(path.join(out,name+'.svg'),body);
- await sharp(Buffer.from(body)).jpeg({quality:94,chromaSubsampling:'4:4:4'}).toFile(path.join(out,name+'.jpg'));
+ // Plantilla ligera con referencias a las fotografías completas. El botón de
+ // descarga del visor las incrusta para obtener un único SVG autónomo.
+ let linked=body;
+ for(const [key,data] of Object.entries(assets))if(key!=='logo')linked=linked.replaceAll(data,`imagenes-hd/${key}.jpg`);
+ await fs.writeFile(path.join(out,name+'.svg'),linked);
+ // Texturas web de hasta 4096 px; la cenefa mantiene sus dimensiones anteriores.
+ // Se renderiza directamente desde el SVG a esa resolución, sin ampliar un JPG.
+ const longEdge=name==='fondo'?2440:2400,density=name==='cenefa'?72:72*4096/longEdge;
+ // Este SVG se construye aquí con fuentes locales conocidas: los datos HD
+ // incrustados superan el límite de 10 MB por atributo del lector XML.
+ await sharp(Buffer.from(body),{density,unlimited:true}).jpeg({quality:94,chromaSubsampling:'4:4:4'}).toFile(path.join(out,name+'.jpg'));
  console.log(name);
 }

@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-14",
+  "source": "TIFF escalados 4× entregados por el cliente",
+  "conversion": "JPEG calidad 95–96, color sRGB, muestreo 4:4:4. Sin redimensionar ni recortar. Los TIFF originales se conservan por separado.",
+  "images": [
+    {
+      "key": "hangar",
+      "file": "hangar.jpg",
+      "source": "grande02_Techo_hangar-high fidelity v2-4x.tiff",
+      "width": 5792,
+      "height": 4344,
+      "sourceSha256": "2adca12689e3be7fe2a2f0923888e4ef4907c2c618e03c94abe72ae09566984c",
+      "quality": 96
+    },
+    {
+      "key": "contenedor",
+      "file": "contenedor.jpg",
+      "source": "grande03_Techo_contenedor-high fidelity v2-4x.tiff",
+      "width": 5792,
+      "height": 4344,
+      "sourceSha256": "1c25715e68d31a17a9c2a04231921c4ad10dac4a7edbfd163b4a23f3c77e9e1d",
+      "quality": 96
+    },
+    {
+      "key": "cubierta",
+      "file": "cubierta.jpg",
+      "source": "grande04_Techo_cubierta-high fidelity v2-4x.tiff",
+      "width": 8684,
+      "height": 2896,
+      "sourceSha256": "96e8b912e51b6412a5fc26beadc49b2c480f8527f447c92d40ecad1735fa5568",
+      "quality": 95
+    },
+    {
+      "key": "serviteca",
+      "file": "serviteca.jpg",
+      "source": "grande05_Techo_serviteca-high fidelity v2-4x.tiff",
+      "width": 6400,
+      "height": 3600,
+      "sourceSha256": "4461c19571d43b96d013ac54634b5f5c3591941085eb4ecf571614c861bc49b2",
+      "quality": 96
+    },
+    {
+      "key": "cad-luces",
+      "file": "cad-luces.jpg",
+      "source": "grande06_AutoCAD_luces-high fidelity v2-4x.tiff",
+      "width": 4944,
+      "height": 2272,
+      "sourceSha256": "08672bd4f44e06666cceeff82f008327d3abca4799927091cca4a1cbbd41d07b",
+      "quality": 96
+    },
+    {
+      "key": "cad-configuraciones",
+      "file": "cad-configuraciones.jpg",
+      "source": "grande07_AutoCAD_configuraciones-high fidelity v2-4x.tiff",
+      "width": 2196,
+      "height": 716,
+      "sourceSha256": "d4dcc40ffb651d11065e5474abcb9734efb281e3a8dcc08db42748112d228cdc",
+      "quality": 96
+    },
+    {
+      "key": "campo",
+      "file": "campo.jpg",
+      "source": "grande08_Galpon_campo-high fidelity v2-4x.tiff",
+      "width": 6400,
+      "height": 3600,
+      "sourceSha256": "9e0deea5fa3619d15229a1eddbfcd92da5399b373891590b5137db5618219b14",
+      "quality": 96
+    },
+    {
+      "key": "cabana",
+      "file": "cabana.jpg",
+      "source": "grande09_Nuevos_desarrollos_superior-high fidelity v2-4x.tiff",
+      "width": 6744,
+      "height": 3216,
+      "sourceSha256": "710f71b4b7f411ff53b254fa2c62542fce39cd1576035d302c4ba20af9fda092",
+      "quality": 95
+    },
+    {
+      "key": "lodge",
+      "file": "lodge.jpg",
+      "source": "grande10_Nuevos_desarrollos_inferior-high fidelity v2-4x.tiff",
+      "width": 6744,
+      "height": 3228,
+      "sourceSha256": "569a282344c5e7c2958e93e191f14d27680217ccf9b082311fbd1a2460375b97",
+      "quality": 96
+    },
+    {
+      "key": "corporativa",
+      "file": "corporativa.jpg",
+      "source": "grande11_Fondo_corporativo-high fidelity v2-4x.tiff",
+      "width": 5496,
+      "height": 4580,
+      "sourceSha256": "75be20c6d8bc8d775e209645a841a9a65a708f6907b29b244df9b7c26791d6eb",
+      "quality": 96
+    }
+  ]
+}

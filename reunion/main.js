@@ -3,13 +3,13 @@ import {OrbitControls} from '../assets/vendor/OrbitControls.js';
 import {proposals,dimensions as spec} from './config.js';
 
 const $=id=>document.getElementById(id), N='#143858', Y='#ecab00';
-const ART_REV='6',asset=file=>`assets/${file}?v=${ART_REV}`;
+const ART_REV='7',asset=file=>`assets/${file}?v=${ART_REV}`;
 const viewer=$('viewer'), query=new URL(location.href).searchParams;
 let current=proposals[query.get('propuesta')]?query.get('propuesta'):'laterales';
 let sheet=query.get('plancha')==='244'?2.44:2.40, orientation=query.get('pantalla')==='vertical'?'portrait':'landscape';
 let scene,camera,renderer,controls,booth,samples,furniture,sides,measurements,planLabels;
 let ready=false,currentView='perspective',motion=null,selectedPanel='izquierdo';
-let tvVideo,tvTexture,tvPoster,tvScreen,wantsTVPlaying=true;
+let tvVideo,tvTexture,tvPoster,tvScreen,wantsTVPlaying=true,exportingSVG=false;
 const images={},reducedMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const panelTitles={izquierdo:'Aplicaciones y geometría',derecho:'Ventajas y nuevos desarrollos',fondo:'Fondo corporativo',cenefa:'Cenefa de identificación'};
 
@@ -202,6 +202,31 @@ function panel(id=selectedPanel){selectedPanel=id;$('panel-title').textContent=p
   document.querySelectorAll('[data-panel]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.panel===id));
 }
 let toastTimer;function toast(s){clearTimeout(toastTimer);$('toast').textContent=s;$('toast').hidden=false;toastTimer=setTimeout(()=>$('toast').hidden=true,3500);}
+async function downloadPanelSVG(event){
+  event.preventDefault();if(exportingSVG)return;
+  exportingSVG=true;const id=selectedPanel,button=$('download-svg'),label=button.textContent;
+  button.textContent='Preparando SVG HD…';button.setAttribute('aria-disabled','true');
+  try{
+    const source=new URL(asset(`${id}.svg`),location.href),response=await fetch(source);
+    if(!response.ok)throw Error(`SVG: ${response.status}`);
+    const doc=new DOMParser().parseFromString(await response.text(),'image/svg+xml');
+    if(doc.querySelector('parsererror'))throw Error('SVG inválido');
+    await Promise.all([...doc.querySelectorAll('image')].map(async image=>{
+      const href=image.getAttribute('href');if(!href||href.startsWith('data:'))return;
+      const url=new URL(href,source);if(url.origin!==location.origin)throw Error('Imagen fuera del proyecto');
+      url.searchParams.set('v',ART_REV);const result=await fetch(url);
+      if(!result.ok)throw Error(`Imagen: ${result.status}`);
+      const blob=await result.blob();
+      const data=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(reader.error);reader.readAsDataURL(blob);});
+      image.setAttribute('href',data);
+    }));
+    const blob=new Blob([new XMLSerializer().serializeToString(doc)],{type:'image/svg+xml;charset=utf-8'});
+    const url=URL.createObjectURL(blob),link=document.createElement('a');
+    link.href=url;link.download=`WS-${id}-HD.svg`;document.body.append(link);link.click();link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),30000);
+  }catch(error){console.error(error);toast('No se pudo preparar el SVG HD. Inténtalo de nuevo.');}
+  finally{exportingSVG=false;button.textContent=label;button.removeAttribute('aria-disabled');}
+}
 function bind(){
   document.querySelectorAll('[data-proposal]').forEach(b=>b.addEventListener('click',()=>setProposal(b.dataset.proposal)));
   document.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
@@ -209,6 +234,7 @@ function bind(){
   document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).close()));
   document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));
   $('open-panels').addEventListener('click',()=>{panel();$('panels-modal').showModal();});$('open-brief').addEventListener('click',()=>$('brief-modal').showModal());
+  $('download-svg').addEventListener('click',downloadPanelSVG);
   for(const id of ['show-samples','show-furniture','show-sides','show-dimensions'])$(id).addEventListener('change',visibility);
   $('sheet-size').addEventListener('change',()=>{sheet=Number($('sheet-size').value);if(ready)build();urlState();});
   $('tv-orientation').addEventListener('change',()=>{orientation=$('tv-orientation').value;if(ready)build();urlState();});

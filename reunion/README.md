@@ -63,3 +63,11 @@ Las dos imágenes del extremo derecho de la plancha derecha se regeneran con Ima
 - [Foto 2 · recuadro superior](assets/imagenes/desarrollo-cabana-cliente-20261014.jpg): 1686 × 804 px, misma proporción que el espacio de 562 × 268 del arte.
 - [Foto 3 · recuadro inferior](assets/imagenes/desarrollo-lodge-cliente-20261014.jpg): 1686 × 807 px, misma proporción que el espacio de 562 × 269 del arte.
 - [Prompts, referencias y formato](assets/imagenes/prompts-desarrollos-20261014.json): herramienta integrada ImageGen. Son imágenes conceptuales regeneradas, no documentos de una obra construida.
+
+### Imágenes escaladas 4× · 14 de octubre de 2026
+
+Se incorporan los diez TIFF escalados entregados por el cliente: hangar, contenedor, cubierta, serviteca, ambos dibujos AutoCAD, galpón de campo, las dos imágenes de nuevos desarrollos y el fondo corporativo. La distribución, los encuadres, los textos y el logo conservan el diseño aprobado. Las versiones anteriores de la raíz permanecen disponibles.
+
+`assets/imagenes-hd/` contiene copias JPEG a las dimensiones completas de los TIFF, con calidad 95–96, muestreo 4:4:4 y color sRGB. `manifest.json` registra dimensiones, nombres de origen y huellas SHA-256 de los TIFF; estos se conservan por separado y no se incluyen en el sitio. Para repetir la importación: `node reunion/tools/import-upscaled.mjs /ruta/a/los/tiff`.
+
+El botón de descarga genera un SVG autónomo con estas imágenes completas incrustadas, sin reducirlas ni volver a comprimirlas. Las plantillas SVG del repositorio enlazan las imágenes para evitar duplicar sus datos en el código fuente. Los JPG del visor se renderizan directamente desde esos SVG con un lado máximo de 4096 píxeles; la cenefa mantiene su tamaño previo. El enlace «SVG con imágenes HD» descarga la versión con texto vectorial e imágenes completas. El escalado no cambia las medidas físicas del stand ni sustituye la preparación final de impresión.

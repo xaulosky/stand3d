@@ -21,7 +21,7 @@ Panel derecho: las ventajas ocupan la zona izquierda y “Nuevos desarrollos”,
 - Se puede comparar plancha 122 × 240 cm y 122 × 244 cm: ambas medidas se mencionaron. Por defecto se mantiene el largo de 240 cm indicado por escrito. Fondo compuesto: 240/244 cm de ancho × 244 cm de alto, con junta horizontal a la mitad. Comprobar altura útil y fijación con el recinto.
 - Las muestras tienen 150 cm de largo de trabajo; también se discutió acortarlas. Ancho de 60 cm, perfil, ligera curvatura, corrugado, inclinación y soportes son ilustrativos.
 - Mesa de referencia: 105 × 52 cm. Confirmar la mesa disponible, sillas y soporte móvil de TV. La pantalla permite comparar orientación horizontal y vertical.
-- El hangar y la cubierta ya incorporan los retoques. Cabaña y lodge son propuestas conceptuales generadas, no fotografías de obras ejecutadas. Revisar las imágenes y la resolución final antes de imprimir.
+- El hangar usa la imagen entregada por el cliente el 14 de octubre; la cubierta incorpora el retoque previo. Cabaña y lodge son propuestas conceptuales generadas, no fotografías de obras ejecutadas. Revisar las imágenes y la resolución final antes de imprimir.
 - Resolver el montaje permitido sin pegar ni perforar el recinto. El visor no calcula estructuras ni fijaciones.
 
 ## Archivos
@@ -51,3 +51,7 @@ El archivo `assets/video/ws-aplicaciones-3d.mp4` es una copia optimizada para el
 El movimiento dentro de la TV requiere WebGL. Si no está disponible, el visor conserva las doce imágenes de referencia del stand, con un fotograma del video.
 
 ![Video de aplicaciones dentro de la TV del stand](assets/video/vista-tv-en-stand.jpg)
+
+### Cambio de imagen · 14 de octubre de 2026
+
+La foto de «TECHO HANGAR», en la esquina superior izquierda de la plancha izquierda, se reemplaza por la imagen adjunta del hangar azul con el letrero «piso caminante». Se extrajo el JPEG original del PDF entregado por el cliente, sin regenerarlo ni retocarlo. Se conserva el archivo completo en `assets/imagenes/hangar-cliente-20261014.jpg`; el arte usa un encuadre alto para mantener visible la cima del arco en la casilla apaisada. V3, V4 y V5 comparten esta plancha. El JPG, SVG y las vistas del modelo reflejan el cambio.

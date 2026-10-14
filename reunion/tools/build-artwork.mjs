@@ -9,14 +9,15 @@ const sharp=require('sharp');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const out=path.join(root,'reunion/assets');await fs.mkdir(out,{recursive:true});
 const N='#143858',Y='#ecab00',W='#fff',M='#cbd9e4';
-const assets={};
+const assets={},photoSizes={};
 const files={
   logo:'assets/logo.jpg',
   ...Object.fromEntries(['contenedor','serviteca','campo','cad-luces','cad-configuraciones'].map(k=>[k,`assets/revision/${k}.jpg`])),
-  ...Object.fromEntries(Object.entries({hangar:'hangar-retocado',cubierta:'cubierta-retocada',corporativa:'fondo-corporativo-natural',cabana:'desarrollo-cabana',lodge:'desarrollo-lodge'}).map(([k,f])=>[k,`reunion/assets/imagenes/${f}.jpg`]))
+  ...Object.fromEntries(Object.entries({hangar:'hangar-cliente-20261014',cubierta:'cubierta-retocada',corporativa:'fondo-corporativo-natural',cabana:'desarrollo-cabana',lodge:'desarrollo-lodge'}).map(([k,f])=>[k,`reunion/assets/imagenes/${f}.jpg`]))
 };
 for(const [k,f] of Object.entries(files)){
   let img=sharp(path.join(root,f));
+  photoSizes[k]=await img.metadata();
   const b=await img.resize({width:k==='corporativa'?1536:1100,withoutEnlargement:true}).jpeg({quality:88}).toBuffer();
   assets[k]='data:image/jpeg;base64,'+b.toString('base64');
 }
@@ -24,7 +25,14 @@ const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll
 const rect=(x,y,w,h,c,r=0)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}" rx="${r}"/>`;
 const text=(s,x,y,size=32,c=N,weight=400,anchor='start')=>`<text x="${x}" y="${y}" font-family="Arial, Helvetica, sans-serif" font-size="${size}" fill="${c}" font-weight="${weight}" text-anchor="${anchor}">${esc(s)}</text>`;
 const lines=(arr,x,y,size=30,c=N,weight=400,anchor='start')=>arr.map((s,i)=>text(s,x,y+i*size*1.24,size,c,weight,anchor)).join('');
-const photo=(k,x,y,w,h,fit='xMidYMid slice')=>`<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" overflow="hidden"><image href="${assets[k]}" width="${w}" height="${h}" preserveAspectRatio="${fit}"/></svg>`;
+const photo=(k,x,y,w,h,fit='xMidYMid slice')=>{
+  // El encuadre alto del adjunto conserva la cima del arco en la casilla apaisada.
+  if(k==='hangar'){
+    const imageHeight=w*photoSizes[k].height/photoSizes[k].width;
+    return `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" overflow="hidden"><image href="${assets[k]}" x="0" y="${-(imageHeight-h)*.22}" width="${w}" height="${imageHeight}" preserveAspectRatio="xMidYMid meet"/></svg>`;
+  }
+  return `<svg x="${x}" y="${y}" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" overflow="hidden"><image href="${assets[k]}" width="${w}" height="${h}" preserveAspectRatio="${fit}"/></svg>`;
+};
 const svg=(body,w,h,title)=>`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}"><title>${esc(title)}</title>${body}</svg>`;
 function header(title,subtitle){return rect(0,0,2400,1220,N)+rect(16,16,2368,1188,'#edf1f4')+rect(16,16,2368,190,N)+photo('logo',60,26,280,156,'xMidYMid meet')+rect(380,42,2,113,'#59788f')+text(title,430,94,52,W,700)+text(subtitle,433,155,28,M)+rect(16,204,2368,6,Y);}
 function left(){let b=header('TECHOS Y BODEGAS AUTOPORTANTES','Cuatro soluciones para distintos proyectos');
